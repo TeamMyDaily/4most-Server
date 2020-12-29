@@ -1,3 +1,5 @@
+const { TotalKeyword } = require('./index');
+
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('SelectedKeyword', {
     ToTalKeywordId: {

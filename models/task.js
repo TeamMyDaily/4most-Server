@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         title: {
             type: DataTypes.STRING(20),
-            allowNull: False,
+            allowNull: false,
         },
         detail: {
             type: DataTypes.STRING(500),
-            allowNull: True,
+            allowNull: true,
         },
         rate: {
             type: DataTypes.INTEGER,
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         date: {
             type: DataTypes.DATE,
-            allowNull:False,
+            allowNull:false,
         }
     }, {
         freezeTableName: true,

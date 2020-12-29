@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         goal: {
             type: DataTypes.STRING(30),
-            allowNull: False,
+            allowNull: false,
         }
     }, {
         freezeTableName: true,
