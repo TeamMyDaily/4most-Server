@@ -12,5 +12,11 @@ if (config.use_env_variable) {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+db.Keyword = require('./keyword')(sequelize, Sequelize);
+db.SelectedKeyword = require('./selected_keyword')(sequelize, Sequelize);
+db.Task = require('./task')(sequelize, Sequelize);
+db.WeekGoal = require('./total_keyword')(sequelize, Sequelize);
+db.WeekGoal = require('./user')(sequelize, Sequelize);
+db.WeekGoal = require('./week_goal')(sequelize, Sequelize);
 
 module.exports = db;
