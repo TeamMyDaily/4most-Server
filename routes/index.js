@@ -6,8 +6,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.use('/evaluation', require('./evaluation'));
-router.use('/review', require('./review'));
+router.use('/evaluations', require('./evaluations'));
+router.use('/reviews', require('./reviews'));
 router.use('/keywords', require('./keywords'));
 router.use('/tasks', require('./tasks'));
 router.use('/users', require('./users'));
