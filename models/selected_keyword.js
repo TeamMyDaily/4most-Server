@@ -2,7 +2,7 @@ const { TotalKeyword } = require('./index');
 
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('SelectedKeyword', {
-    ToTalKeywordId: {
+    TotalKeywordId: {
       type: DataTypes.INTEGER,
       reference: {
         model: TotalKeyword,
@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
     }
   }, {
-    freezeTableName: true,
+    freezeTableName: false,
     timeStamps: false,
   })
 }
