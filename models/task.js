@@ -1,11 +1,11 @@
-const { SelectedKeyword } = require("./index")
+const { TotalKeyword } = require("./index")
 
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('Task', {
-        SelectedKeywordId: {
+        TotalKeywordId: {
             type: DataTypes.INTEGER,
             reference: {
-                model: SelectedKeyword,
+                model: TotalKeyword,
                 key: 'id',
             }
         },
@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         date: {
             type: DataTypes.DATE,
             allowNull:false,
+        },
+        week: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         }
     }, {
         freezeTableName: true,
