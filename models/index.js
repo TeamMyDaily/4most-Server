@@ -25,17 +25,21 @@ db.Review = require('./review')(sequelize,Sequelize);
 db.User.belongsToMany(db.Keyword, { through: 'TotalKeyword' });
 db.Keyword.belongsToMany(db.User, { through: 'TotalKeyword' });
 
-/** 1 : 1   TotalKeyword : SelectedKeyword */
-db.TotalKeyword.hasOne(db.SelectedKeyword);
-db.SelectedKeyword.belongsTo(db.TotalKeyword);
+/** 1 : N   User : SelectedKeyword */
+db.User.hasMany(db.SelectedKeyword, { foreignKey: { name: 'UserId', allowNull: false }, onDelete: 'cascade'});
+db.SelectedKeyword.belongsTo(db.User);
+
+/** 1 : N   Keyword : SelectedKeyword */
+db.Keyword.hasMany(db.SelectedKeyword, { foreignKey: { name: 'KeywordId', allowNull: false }, onDelete: 'cascade'});
+db.SelectedKeyword.belongsTo(db.Keyword);
 
 /** 1 : N   User : Review */
 db.User.hasMany(db.Review, { foreignKey: { name: 'UserId', allowNull: false }, onDelete: 'cascade'});
 db.Review.belongsTo(db.User);
 
-/** 1 : N   SelectedKeyword : Task */
-db.SelectedKeyword.hasMany(db.Task, { foreignKey: { name: 'SelectedKeywordId', allowNull: false }, onDelete: 'cascade'});
-db.Task.belongsTo(db.SelectedKeyword);
+/** 1 : N   TotalKeyword : Task */
+db.TotalKeyword.hasMany(db.Task, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade'});
+db.Task.belongsTo(db.TotalKeyword);
 
 /** 1 : 1  SelectedKeyword : WeekGoal */
 db.SelectedKeyword.hasOne(db.WeekGoal);

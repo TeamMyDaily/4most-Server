@@ -1,11 +1,18 @@
-const { TotalKeyword } = require('./index');
+const { User, Keyword } = require('./index');
 
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('SelectedKeyword', {
-    TotalKeywordId: {
+    UserId: {
       type: DataTypes.INTEGER,
       reference: {
-        model: TotalKeyword,
+        model: User,
+        key: 'id',
+      }
+    },
+    KeywordId: {
+      type: DataTypes.INTEGER,
+      reference: {
+        model: Keyword,
         key: 'id',
       }
     },
@@ -16,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
     }
   }, {
-    freezeTableName: false,
+    freezeTableName: true,
     timeStamps: false,
   })
 }
