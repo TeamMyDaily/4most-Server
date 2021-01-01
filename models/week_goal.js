@@ -1,16 +1,24 @@
-const { SelectedKeyword } = require("./index")
+const { TotalKeyword } = require("./index")
 
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('WeekGoal', {
-        SelectedKeywordId: {
+        TotalKeywordId: {
             type: DataTypes.INTEGER,
             reference: {
-                model: SelectedKeyword,
+                model: TotalKeyword,
                 key: 'id',
             }
         },
         goal: {
             type: DataTypes.STRING(30),
+            allowNull: false,
+        },
+        date: {
+            type: DataTypes.DATE,
+            allowNull:false,
+        },
+        weekNum: {
+            type: DataTypes.INTEGER,
             allowNull: false,
         }
     }, {
