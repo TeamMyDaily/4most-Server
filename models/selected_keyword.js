@@ -2,20 +2,8 @@ const { User, Keyword } = require('./index');
 
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('SelectedKeyword', {
-    UserId: {
+    TotalKeywordId: {
       type: DataTypes.INTEGER,
-      reference: {
-        model: User,
-        key: 'id',
-      },
-      allowNull: false,
-    },
-    KeywordId: {
-      type: DataTypes.INTEGER,
-      reference: {
-        model: Keyword,
-        key: 'id',
-      },
       allowNull: false,
     },
     definition: {
@@ -26,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     date: {
       type: DataTypes.DATE,
-      allownull: false,
+      allowNull: false,
     },
     weekNum: {
       type: DataTypes.INTEGER,
