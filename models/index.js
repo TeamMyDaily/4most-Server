@@ -25,13 +25,8 @@ db.Review = require('./review')(sequelize,Sequelize);
 db.User.belongsToMany(db.Keyword, { through: 'TotalKeyword' });
 db.Keyword.belongsToMany(db.User, { through: 'TotalKeyword' });
 
-/** 1 : N   User : SelectedKeyword */
-db.User.hasMany(db.SelectedKeyword, { foreignKey: { name: 'UserId', allowNull: false }, onDelete: 'cascade'});
-db.SelectedKeyword.belongsTo(db.User);
-
-/** 1 : N   Keyword : SelectedKeyword */
-db.Keyword.hasMany(db.SelectedKeyword, { foreignKey: { name: 'KeywordId', allowNull: false }, onDelete: 'cascade'});
-db.SelectedKeyword.belongsTo(db.Keyword);
+/** 1 : 1 TotalKeyword : SelectedKeyword */
+db.TotalKeyword.hasOne(db.SelectedKeyword, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade' });
 
 /** 1 : N   User : Review */
 db.User.hasMany(db.Review, { foreignKey: { name: 'UserId', allowNull: false }, onDelete: 'cascade'});
