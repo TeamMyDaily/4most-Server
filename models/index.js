@@ -25,20 +25,19 @@ db.Review = require('./review')(sequelize,Sequelize);
 db.User.belongsToMany(db.Keyword, { through: 'TotalKeyword' });
 db.Keyword.belongsToMany(db.User, { through: 'TotalKeyword' });
 
-/** 1 : 1   TotalKeyword : SelectedKeyword */
-db.TotalKeyword.hasOne(db.SelectedKeyword);
-db.SelectedKeyword.belongsTo(db.TotalKeyword);
+/** 1 : 1 TotalKeyword : SelectedKeyword */
+db.TotalKeyword.hasOne(db.SelectedKeyword, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade' });
 
 /** 1 : N   User : Review */
 db.User.hasMany(db.Review, { foreignKey: { name: 'UserId', allowNull: false }, onDelete: 'cascade'});
 db.Review.belongsTo(db.User);
 
-/** 1 : N   SelectedKeyword : Task */
-db.SelectedKeyword.hasMany(db.Task, { foreignKey: { name: 'SelectedKeywordId', allowNull: false }, onDelete: 'cascade'});
-db.Task.belongsTo(db.SelectedKeyword);
+/** 1 : N   TotalKeyword : Task */
+db.TotalKeyword.hasMany(db.Task, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade'});
+db.Task.belongsTo(db.TotalKeyword);
 
-/** 1 : 1  SelectedKeyword : WeekGoal */
-db.SelectedKeyword.hasOne(db.WeekGoal);
-db.WeekGoal.belongsTo(db.SelectedKeyword);
+/** 1 : 1  TotalKeyword : WeekGoal */
+db.TotalKeyword.hasOne(db.WeekGoal);
+db.WeekGoal.belongsTo(db.TotalKeyword);
 
 module.exports = db;
