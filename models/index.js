@@ -36,8 +36,8 @@ db.Review.belongsTo(db.User);
 db.TotalKeyword.hasMany(db.Task, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade'});
 db.Task.belongsTo(db.TotalKeyword);
 
-/** 1 : 1  SelectedKeyword : WeekGoal */
-db.SelectedKeyword.hasOne(db.WeekGoal);
-db.WeekGoal.belongsTo(db.SelectedKeyword);
+/** 1 : 1  TotalKeyword : WeekGoal */
+db.TotalKeyword.hasOne(db.WeekGoal);
+db.WeekGoal.belongsTo(db.TotalKeyword);
 
 module.exports = db;
