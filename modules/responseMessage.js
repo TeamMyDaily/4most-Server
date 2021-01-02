@@ -17,6 +17,10 @@ module.exports = {
   ALREADY_ID: "존재하는 ID 입니다.",
   NO_USER: "존재하지않는 유저 id 입니다.",
   MISS_MATCH_PW: "비밀번호가일치하지않습니다",
+  
+  /* 이메일 인증 */
+  AUTH_EMAIL_SUCCESS: "이메일 인증 성공",
+  AUTH_EMAIL_FAIL: "이메일 인증 실패",
 
   /* User */
   READ_USER_SUCCESS: "사용자 조회 성공",

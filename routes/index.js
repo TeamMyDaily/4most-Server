@@ -11,5 +11,6 @@ router.use('/reviews', require('./reviews'));
 router.use('/keywords', require('./keywords'));
 router.use('/tasks', require('./tasks'));
 router.use('/users', require('./users'));
+router.use('/auth', require('./auth'));
 
 module.exports = router;

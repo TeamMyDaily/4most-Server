@@ -1,11 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('User', {
-    accountId: {
-      type: DataTypes.STRING(10),
+    email: {
+      type: DataTypes.STRING(30),
       unique: true,
       allowNull: false,
     },
-    hashedPassword: {
+    userName: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+    },
+    password: {
       type: DataTypes.STRING(200),
       allowNull: false,
     },
