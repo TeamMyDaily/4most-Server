@@ -15,11 +15,16 @@ module.exports = (sequelize, DataTypes) => {
         },
         date: {
             type: DataTypes.DATE,
-            allowNull:false,
+            allowNull: false,
         },
         weekNum: {
             type: DataTypes.INTEGER,
             allowNull: false,
+        },
+        priority: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: -1,
         }
     }, {
         freezeTableName: true,
