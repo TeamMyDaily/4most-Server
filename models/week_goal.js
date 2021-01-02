@@ -21,11 +21,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        priority: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: -1,
-        }
     }, {
         freezeTableName: true,
         timestamps: false,
