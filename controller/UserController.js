@@ -12,6 +12,28 @@ var generateRandom = function (min, max) {
   return ranNum;
 }
 module.exports ={
+  sendEmail : async(req, res) => {
+    const number = generateRandom(111111,999999)
+    const { email } = req.body;
+
+    const mailOptions = {
+        from: "4Most",
+        to: email,
+        subject: "[4Most]인증 관련 이메일 입니다",
+        text: "오른쪽 숫자 6자리를 입력해주세요 : [" + number + "]"
+    };
+    try{
+      const result = await smtpTransport.sendMail(mailOptions)
+      return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.AUTH_EMAIL_SUCCESS, {
+        number: number
+      }))
+      smtpTransport.close();
+    } catch (error) {
+      console.error(error);
+      return res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.AUTH_EMAIL_FAIL));
+    }
+  },
+
   signup: async (req, res) => {
     const { email, password, passwordConfirm, userName } = req.body; 
     if(!email || !password || !passwordConfirm || !userName) {

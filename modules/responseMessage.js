@@ -18,9 +18,9 @@ module.exports = {
   NO_USER: "존재하지않는 유저 id 입니다.",
   MISS_MATCH_PW: "비밀번호가일치하지않습니다",
   
-  /* 이메일 인증 */
-  AUTH_EMAIL_SUCCESS: "이메일 인증 성공",
-  AUTH_EMAIL_FAIL: "이메일 인증 실패",
+  /* 인증 메일 전송 */
+  AUTH_EMAIL_SUCCESS: "인증 메일 전송 선공",
+  AUTH_EMAIL_FAIL: "인증 메일 전송 실패",
 
   /* User */
   READ_USER_SUCCESS: "사용자 조회 성공",

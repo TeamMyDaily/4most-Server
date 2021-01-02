@@ -69,7 +69,7 @@ module.exports = {
   updateRefreshToken: async (id, refreshToken) => {
     try {
       const user = await User.update(
-        { refreshToken},
+        { refreshToken },
         { where: { id }}
       );
     } catch (err){
