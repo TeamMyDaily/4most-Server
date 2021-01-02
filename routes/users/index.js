@@ -5,7 +5,7 @@ const authUtil = require('../../middlewares/authUtil')
 
 router.post('/signup', userController.signup);
 router.post('/signin', userController.signin);
-// router.post('/sendEmail', userController.sendEmail);
+router.post('/sendEmail', userController.sendEmail);
 // router.get('/', authUtil.checkToken, userController.readAll);
 
 module.exports = router;
