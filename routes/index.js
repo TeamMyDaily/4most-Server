@@ -1,16 +1,16 @@
 var express = require('express');
 var router = express.Router();
+const authUtils = require('../middlewares/authUtil');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.use('/reports', require('./reports'));
-router.use('/reviews', require('./reviews'));
-router.use('/keywords', require('./keywords'));
-router.use('/tasks', require('./tasks'));
+router.use('/reports', authUtils.checkToken, require('./reports'));
+router.use('/reviews', authUtils.checkToken, require('./reviews'));
+router.use('/keywords', authUtils.checkToken, require('./keywords'));
+router.use('/tasks', authUtils.checkToken, require('./tasks'));
 router.use('/users', require('./users'));
-router.use('/auth', require('./auth'));
 
 module.exports = router;
