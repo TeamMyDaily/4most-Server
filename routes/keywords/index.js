@@ -10,7 +10,7 @@ router.post('/', keywordController.selectKeyword);
 router.put('/', keywordController.addKeyword);
 /* [DELETE] localhost:3000/keywords/  */
 router.delete('/', keywordController.deleteKeyword);
-/* [GET] localhost:3000/keywords/:priority */
-router.get('/:priority', keywordController.addPriority);
+/* [POST] localhost:3000/keywords/define */
+router.get('/priority', keywordController.defineKeywords);
 
 module.exports = router;

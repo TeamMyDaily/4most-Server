@@ -66,7 +66,6 @@ module.exports = {
     const selectedKeywords = []
     try {
       for(var name of selected) {
-        console.log(name)
         const keyword = await Keyword.findOne({ where: { name : name }, attributes: ['id'] })
         const totalKeyword = await TotalKeyword.findOne({
           where: {
@@ -86,8 +85,27 @@ module.exports = {
       return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "키워드 설정 실패"));
     }
   },
-  /* 키워드별 우선순위 등록 */
-  addPriority: async (req, res) => {
+  /* 키워드 정의 등록 */
+  defineKeywords: async (req, res) => {
+    const { id } = req.decoded;
+    const { keywords } = req.body;
+    const selectedKeywords = []
+    try{
+      for (var k of keywords) {
+        const name = k.name;
+        const keyword = await Keyword.fineOne({where: {name: name}});
+        const totalKeyword = await TotalKeyword.findOne({where: {UserId: id, KeywordId: keyword.id}});
+        const selectedKeyword = await SelectedKeyword.update({
+          definition: k.definition, 
+          priority: k.priority 
+        },{
+          where: {TotalKeywordId: totalKeyword.id}
+        });
+        selectedKeywords.push(selectedKeyword)
+      }
+      return res.status(sc.OK).send(ut.success(sc.OK, "키워드 설정 완료", selectedKeyword));
+    } catch(err) {
 
+    }
   }
 }
