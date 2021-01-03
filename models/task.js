@@ -17,17 +17,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(500),
             allowNull: true,
         },
-        rate: {
+        satisfaction: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
         },
         date: {
             type: DataTypes.DATE,
             allowNull:false,
-        },
-        weekNum: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
         }
     }, {
         freezeTableName: true,

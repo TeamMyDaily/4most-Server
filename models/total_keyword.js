@@ -21,11 +21,6 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id',
             }
         },
-        priority: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defualtValue: -1,
-        },
         isCustom: {
             type: DataTypes.BOOLEAN,
             allowNull: false,

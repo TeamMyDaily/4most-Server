@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
       },
     },
-    week: {
+    date: {
       type: DataTypes.DATE,
       allowNull: false,
     },

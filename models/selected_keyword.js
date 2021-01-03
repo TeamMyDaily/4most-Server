@@ -9,16 +9,14 @@ module.exports = (sequelize, DataTypes) => {
     definition: {
       type: DataTypes.STRING(200),
     },
-    rank: {
+    priority: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: -1
     },
     date: {
       type: DataTypes.DATE,
       defaultValue: new Date(),
-      allowNull: false,
-    },
-    weekNum: {
-      type: DataTypes.INTEGER,
       allowNull: false,
     }
   }, {
