@@ -9,11 +9,6 @@ module.exports = (sequelize, DataTypes) => {
     definition: {
       type: DataTypes.STRING(200),
     },
-    priority: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: -1
-    },
     date: {
       type: DataTypes.DATE,
       defaultValue: new Date(),

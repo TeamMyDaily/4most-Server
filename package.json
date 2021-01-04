@@ -12,6 +12,7 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.5.1",
+    "moment-timezone": "^0.5.32",
     "morgan": "~1.9.1",
     "mysql2": "^2.2.5",
     "nodemailer": "^6.4.17",

@@ -1,4 +1,4 @@
-const { User, Keyword, TotalKeyword, SelectedKeyword } = require('../models');
+const { User, Keyword, TotalKeyword, SelectedKeyword, KeywordRecord } = require('../models');
 const ut = require('../modules/util');
 const sc = require('../modules/statusCode');
 const rm = require('../modules/responseMessage');
@@ -28,13 +28,16 @@ module.exports = {
   /* 사용자별 키워드 추가 */
   addKeyword: async (req, res)  => {
     const { id } = req.decoded;
-    const { name } = req.body;
+    const { keywords } = req.body;
     try {
-      const keyword = await Keyword.create({ name : name });
-      const totalKeyword = await TotalKeyword.create({
+      addedKeyword = new Array();
+      for ( var keyword of keywords) {
+        const keyword = await Keyword.create({ name : name });
+        const totalKeyword = await TotalKeyword.create({
           KeywordId: keyword.id,
           UserId: id
-      })
+        })
+      }
       return res.status(sc.OK).send(ut.success(sc.OK, "키워드 추가 완료", { keyword: keyword.name }));
     } catch(err) {
       console.log(err);
@@ -89,23 +92,29 @@ module.exports = {
   defineKeywords: async (req, res) => {
     const { id } = req.decoded;
     const { keywords } = req.body;
-    const selectedKeywords = []
+    const selectedKeywords = new Array();
+    const date = new Date()
     try{
       for (var k of keywords) {
         const name = k.name;
         const keyword = await Keyword.fineOne({where: {name: name}});
         const totalKeyword = await TotalKeyword.findOne({where: {UserId: id, KeywordId: keyword.id}});
         const selectedKeyword = await SelectedKeyword.update({
-          definition: k.definition, 
-          priority: k.priority 
+          definition: k.definition
         },{
           where: {TotalKeywordId: totalKeyword.id}
         });
+        const keywordRecord = await KeywordRecord.create({
+          TotalKeywordId: totalKeyword.id,
+          priority: k.priority,
+          date: date
+        })
         selectedKeywords.push(selectedKeyword)
       }
       return res.status(sc.OK).send(ut.success(sc.OK, "키워드 설정 완료", selectedKeyword));
     } catch(err) {
-
+      console.log(err);
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "키워드 정의 실패"));
     }
   }
 }

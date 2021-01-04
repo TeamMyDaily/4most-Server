@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
 router.use('/reports', authUtils.checkToken, require('./reports'));
 router.use('/reviews', authUtils.checkToken, require('./reviews'));
 router.use('/keywords', authUtils.checkToken, require('./keywords'));
-router.use('/tasks', authUtils.checkToken, require('./tasks'));
+router.use('/tasks', require('./tasks'));
 router.use('/users', require('./users'));
 
 module.exports = router;
