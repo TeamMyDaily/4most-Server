@@ -28,6 +28,10 @@ db.Keyword.belongsToMany(db.User, { through: 'TotalKeyword' });
 /** 1 : 1 TotalKeyword : SelectedKeyword */
 db.TotalKeyword.hasOne(db.SelectedKeyword, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade' });
 
+/** 1 : N   Keyword : TotalKeyword */
+db.Keyword.hasMany(db.TotalKeyword, { foreignKey: { name: 'KeywordId', allowNull: false }, onDelete: 'cascade '});
+db.TotalKeyword.belongsTo(db.Keyword);
+
 /** 1 : N   User : Review */
 db.User.hasMany(db.Review, { foreignKey: { name: 'UserId', allowNull: false }, onDelete: 'cascade'});
 db.Review.belongsTo(db.User);
