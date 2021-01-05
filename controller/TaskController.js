@@ -9,7 +9,7 @@ module.exports = {
         try{
             const date  = '2021-01-04';
             const id = 1;
-            // const { date } = req.param;
+            // const { date } = req.params;
             // const { id } = req.decoded;
             const mostRecentDate = await KeywordByDate.findAll({
                 limit: 1,
@@ -52,37 +52,53 @@ module.exports = {
                 data.tasks = selectedKeyword.TotalKeyword.Tasks;
                 result.push(data);
             }
-            return res.status(sc.OK).send(ut.success(sc.OK, "테스크 조회 성공", result));
+            return res.status(sc.OK).send(ut.success(sc.OK, "테스크 전체 조회 성공", result));
         }catch (err){
             console.log(err);
-            return res.status(sc.INTERNAL_SERVER_ERROR)
-            .send(ut.fail(sc.INTERNAL_SERVER_ERROR, "테스크 조회 실패"));
+            return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "테스크 전체 조회 실패"));
         }
     },
+    readTask: async (req, res) => {
+        try{
+            const { taskId } = req.params;
+            const task = await Task.findOne({
+                where: { id: taskId }
+            });
+            return res.status(sc.OK).send(ut.success(sc.OK, "테스크 조회 성공", task));
+        }catch (err){
+            console.log(err);
+            return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "테스크 조회 실패"));
+        } 
+        
 
+
+    },
     createTask : async (req, res) => {
         try {
-            const { name, title, detail, rate, date } = req.body;
-            const { id } = req.decoded;
-            const keyword = await Keyword.findOne({where: { name: name }});
+            const { keyword, title, detail, satisfaction, date } = req.body;
+            const id = 1;
+            // const { id } = req.decoded;
+            // const name = await Keyword.findOne({where: { name: name }});
             const totalKeyword = await TotalKeyword.findOne({
                 where: {
-                    KeywordId: keyword,
                     UserId: id
-                }
+                },
+                include: [{
+                    model: Keyword,
+                    where: { name: keyword },
+                }]
             });
             const task = await Task.create({
                 TotalKeywordId: totalKeyword.id,
                 title: title,
                 detail: detail,
-                rate: rate,
+                satisfaction: satisfaction,
                 date: new Date(date)
             });
             return res.status(sc.OK).send(ut.success(sc.OK, "테스크 생성 성공", task));
         } catch (err) {
             console.log(err);
-            return res.status(sc.INTERNAL_SERVER_ERROR)
-            .send(ut.fail(sc.INTERNAL_SERVER_ERROR, "테스크 생성 실패"));
+            return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "테스크 생성 실패"));
         }
     }
 }
