@@ -40,6 +40,7 @@ module.exports = {
                         attributes: ['name']
                     },{
                         model: Task,
+                        order: [['date', 'DESC']],
                         attributes: ['title', 'satisfaction']
                     }]
                 }],

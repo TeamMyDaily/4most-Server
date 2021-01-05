@@ -13,5 +13,6 @@ router.use('/reviews', authUtils.checkToken, require('./reviews'));
 router.use('/keywords', require('./keywords'));
 router.use('/tasks', require('./tasks'));
 router.use('/users', require('./users'));
+router.use('/goals', require('./goals'));
 
 module.exports = router;

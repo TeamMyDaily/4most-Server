@@ -1,4 +1,4 @@
-const { User, Keyword, TotalKeyword, KeywordByDate, KeywordRecord, WeekGoal } = require('../models');
+const { User, Keyword, TotalKeyword, KeywordByDate, WeekGoal } = require('../models');
 const ut = require('../modules/util');
 const sc = require('../modules/statusCode');
 const rm = require('../modules/responseMessage');
