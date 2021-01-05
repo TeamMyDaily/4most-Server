@@ -11,10 +11,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         goal: {
             type: DataTypes.STRING(30),
-            allowNull: false,
-        },
+            allowNull: true,
+          },
+        isGoalCompleted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+          },
         date: {
             type: DataTypes.DATE,
+            defaultValue: new Date(),
             allowNull: false,
         }
     }, {

@@ -3,8 +3,8 @@ require('moment-timezone');
 var moment = require('moment'); 
 moment.tz.setDefault("Asia/Seoul"); 
 
-var date = moment().format('YYYY-MM-DD HH:mm:ss'); 
-console.log(date);
+// var date = moment().format('YYYY-MM-DD HH:mm:ss'); 
+// console.log(date);
 
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('Task', {

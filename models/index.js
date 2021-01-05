@@ -16,19 +16,18 @@ db.Sequelize = Sequelize;
 db.User = require('./user')(sequelize, Sequelize);
 db.Keyword = require('./keyword')(sequelize, Sequelize);
 db.TotalKeyword = require('./total_keyword')(sequelize, Sequelize);
-db.SelectedKeyword = require('./selected_keyword')(sequelize, Sequelize);
+db.KeywordByDate = require('./keyword_by_date')(sequelize, Sequelize);
 db.Task = require('./task')(sequelize, Sequelize);
 db.WeekGoal = require('./week_goal')(sequelize, Sequelize);
 db.Review = require('./review')(sequelize,Sequelize);
-db.KeywordRecord = require('./keyword_record')(sequelize,Sequelize);
 
 /** N : M   User: Keyword */
 db.User.belongsToMany(db.Keyword, { through: 'TotalKeyword' });
 db.Keyword.belongsToMany(db.User, { through: 'TotalKeyword' });
 
-/** 1 : 1 TotalKeyword : SelectedKeyword */
-db.TotalKeyword.hasOne(db.SelectedKeyword, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade' });
-db.SelectedKeyword.belongsTo(db.TotalKeyword);
+/** 1 : N TotalKeyword : KeywordByDate */
+db.TotalKeyword.hasMany(db.KeywordByDate, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade' });
+db.KeywordByDate.belongsTo(db.TotalKeyword);
 
 /** 1 : N   Keyword : TotalKeyword */
 db.Keyword.hasMany(db.TotalKeyword, { foreignKey: { name: 'KeywordId', allowNull: false }, onDelete: 'cascade '});
@@ -42,12 +41,8 @@ db.Review.belongsTo(db.User);
 db.TotalKeyword.hasMany(db.Task, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade'});
 db.Task.belongsTo(db.TotalKeyword);
 
-/** 1 : 1  TotalKeyword : WeekGoal */
-db.TotalKeyword.hasOne(db.WeekGoal);
+/** 1 : N  TotalKeyword : WeekGoal */
+db.TotalKeyword.hasMany(db.Task, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade'});
 db.WeekGoal.belongsTo(db.TotalKeyword);
-
-/** 1 : N TotalKeyword : KeywordRecord */
-db.TotalKeyword.hasMany(db.KeywordRecord, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade'});
-db.KeywordRecord.belongsTo(db.TotalKeyword);
 
 module.exports = db;

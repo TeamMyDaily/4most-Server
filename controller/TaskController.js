@@ -1,4 +1,4 @@
-const { User, Keyword, TotalKeyword, SelectedKeyword, Task, KeywordRecord } = require('../models');
+const { User, Keyword, TotalKeyword, KeywordByDate, Task } = require('../models');
 const { Op } = require("sequelize");
 const ut = require('../modules/util');
 const sc = require('../modules/statusCode');
@@ -8,17 +8,30 @@ module.exports = {
     readAll: async(req, res) => {
         try{
             const date  = '2021-01-04';
-            const id = 5;
+            const id = 1;
             // const { date } = req.param;
             // const { id } = req.decoded;
-            const keywordRecords = await KeywordRecord.findAll({
-                attributes: { exclude: ['id'] },
+            const mostRecentDate = await KeywordByDate.findAll({
+                limit: 1,
+                attributes: ['date'],
                 where: {
-                    date : {
+                    date: {
                         [Op.lt]: new Date(date),
                     }
                 },
-                order: [['date', 'DESC'],['priority','ASC']],
+                order : [['date', 'DESC']],
+                include: [{
+                    model: TotalKeyword,
+                    attributes: ['UserId'],
+                    where: { UserId: id }
+                }]
+            })
+            const selectedKeywords = await KeywordByDate.findAll({
+                attributes: { exclude: ['id'] },
+                where: {
+                    date : mostRecentDate[0].date
+                },
+                order: [['priority','ASC']],
                 include: [{
                     model: TotalKeyword,
                     where: { UserId: id },
@@ -27,17 +40,16 @@ module.exports = {
                         attributes: ['name']
                     },{
                         model: Task,
-                        attributes: ['title']
+                        attributes: ['title', 'satisfaction']
                     }]
                 }],
             })
-            const totalKeywords = keywordRecords.slice(0,4)
             const result = new Array();
-            for (var totalKeyword of totalKeywords) {
+            for (var selectedKeyword of selectedKeywords) {
                 const data = new Object() ;
-                data.priority = totalKeyword.priority;
-                data.name = totalKeyword.TotalKeyword.Keyword.name;
-                data.tasks = totalKeyword.TotalKeyword.Tasks
+                data.priority = selectedKeyword.priority;
+                data.name = selectedKeyword.TotalKeyword.Keyword.name;
+                data.tasks = selectedKeyword.TotalKeyword.Tasks;
                 result.push(data);
             }
             return res.status(sc.OK).send(ut.success(sc.OK, "테스크 조회 성공", result));
@@ -64,7 +76,7 @@ module.exports = {
                 title: title,
                 detail: detail,
                 rate: rate,
-                date: date
+                date: new Date(date)
             });
             return res.status(sc.OK).send(ut.success(sc.OK, "테스크 생성 성공", task));
         } catch (err) {
