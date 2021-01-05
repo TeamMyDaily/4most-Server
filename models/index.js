@@ -42,7 +42,7 @@ db.TotalKeyword.hasMany(db.Task, { foreignKey: { name: 'TotalKeywordId', allowNu
 db.Task.belongsTo(db.TotalKeyword);
 
 /** 1 : N  TotalKeyword : WeekGoal */
-db.TotalKeyword.hasMany(db.Task, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade'});
+db.TotalKeyword.hasMany(db.WeekGoal, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade'});
 db.WeekGoal.belongsTo(db.TotalKeyword);
 
 module.exports = db;
