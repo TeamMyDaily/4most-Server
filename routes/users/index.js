@@ -9,4 +9,6 @@ router.post('/signin', userController.signin);
 
 router.get('/', userController.readOne);
 // router.get('/', authUtil.checkToken, userController.readOne);
+router.delete('/', authUtil.checkToken, userController.deleteOne);
+router.post('/password', authUtil.checkToken, userController.changePassword);
 module.exports = router;

@@ -2,10 +2,11 @@ const util = require('../modules/util');
 const responseMessage = require('../modules/responseMessage');
 const statusCode = require('../modules/statusCode');
 const { userService } = require('../service');
-const { KeywordByDate, TotalKeyword, Keyword } = require('../models');
+const { KeywordByDate, TotalKeyword, Keyword, User } = require('../models');
 const jwt = require('../modules/jwt')
 const { smtpTransport } = require('../config/email');
 const { Op } = require('sequelize');
+const crypto = require('crypto');
 
 var generateRandom = function (min, max) {
   var ranNum = Math.floor(Math.random()*(max-min+1)) + min;
@@ -13,7 +14,7 @@ var generateRandom = function (min, max) {
 }
 module.exports ={
   sendEmail : async(req, res) => {
-    const number = generateRandom(111111,999999)
+    const number = generateRandom(111111, 999999)
     const { email } = req.body;
 
     const mailOptions = {
@@ -92,6 +93,7 @@ module.exports ={
       return res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.SIGN_IN_FAIL));
     }
   },
+
   readOne: async (req, res) => {
     // const { id, name } = req.decoded;
     const id = 1, name = '최예진';
@@ -154,5 +156,55 @@ module.exports ={
         .status(statusCode.INTERNAL_SERVER_ERROR)
         .send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.INTERNAL_SERVER_ERROR));
     }
+  },
+
+  deleteOne: async (req, res) => {
+    const { id } = req.decoded;
+    // const id = 2;
+    const { password } = req.body;
+    const isCorrect = await userService.checkPassword(id, password);
+
+    if (!isCorrect) {
+      return res
+        .status(statusCode.MISS_MATCH_PW)
+        .send(util.fail(statusCode.MISS_MATCH_PW, responseMessage.MISS_MATCH_PW));
+    }
+    const result = await User.destroy({
+      where: {
+        id: id,
+      }
+    });
+    if (!result) {
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .send(util.fail(statusCode.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
+    }
+    return res
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK,'회원 탈퇴 성공'));
+  },
+
+  changePassword: async (req, res) => {
+    const { id } = req.decoded;
+    const { password } = req.body;
+    
+    const salt = crypto.randomBytes(64).toString('base64');
+    const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
+    const result = await User.update({
+      password: hashedPassword,
+      salt: salt,
+    }, {
+      where: {
+        id: id,
+      }
+    });
+    if (!result) {
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.INTERNAL_SERVER_ERROR));
+    }
+    return res
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, '비밀번호 변경 완료'));
   }
 }
