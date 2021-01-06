@@ -75,5 +75,31 @@ module.exports = {
     } catch (err){
       throw err;
     }
+  },
+
+  checkPassword: async (id, inputPw) => {
+    try {
+      const user = await User.findOne({
+        raw: true,
+        where: {
+          id: id,
+        },
+        attributes: ['password', 'salt']
+      });
+      console.log(user);
+      const password = user.password;
+      const salt = user.salt;
+      const hashedPassword = crypto.pbkdf2Sync(inputPw, salt, 10000, 64, 'sha512').toString('base64');
+      console.log('hashedPassword: ' + hashedPassword);
+
+      if (hashedPassword !== password) {
+        console.log('비밀번호가 일치하지 않습니다.');
+        return false;
+      }
+      return true;
+    } catch(err) {
+      console.log(err);
+      return false;
+    }
   }
 }
