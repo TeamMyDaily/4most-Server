@@ -56,17 +56,17 @@ module.exports = {
   },
   createOne: async (req, res) => {
     const { start, end, now, good, bad, next } = req.body;
-    // const userId = req.decoded;
+    // const { id } = req.decoded;
     console.log(req.body);
-    const userId = 1;
-    if (!userId || !start || !end) {
+    const id = 1;
+    if (!id || !start || !end) {
       console.log('필요한 정보가 없습니다.');
       return res
         .status(sc.BAD_REQUEST)
         .send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
     }
     try {
-      const user = await User.findOne({ where: {id: userId} });
+      const user = await User.findOne({ where: {id: id} });
       if (!user) {
         console.log('사용자를 찾을 수 없음');
         return res
@@ -84,7 +84,7 @@ module.exports = {
       } else {
         inputDate = endDate
       }
-      const createdReview = await Review.create({ UserId: userId, date: inputDate, good: good, bad: bad, next: next });
+      const createdReview = await Review.create({ UserId: id, date: inputDate, good: good, bad: bad, next: next });
       return res
         .status(sc.OK)
         .send(ut.success(sc.OK, '회고 등록 완료', createdReview));
