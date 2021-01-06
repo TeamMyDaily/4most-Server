@@ -2,10 +2,10 @@ const util = require('../modules/util');
 const responseMessage = require('../modules/responseMessage');
 const statusCode = require('../modules/statusCode');
 const { userService } = require('../service');
-const { User } = require('../models');
+const { KeywordByDate, TotalKeyword, Keyword } = require('../models');
 const jwt = require('../modules/jwt')
 const { smtpTransport } = require('../config/email');
-const { response } = require('express');
+const { Op } = require('sequelize');
 
 var generateRandom = function (min, max) {
   var ranNum = Math.floor(Math.random()*(max-min+1)) + min;
@@ -92,4 +92,67 @@ module.exports ={
       return res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.SIGN_IN_FAIL));
     }
   },
+  readOne: async (req, res) => {
+    // const { id, name } = req.decoded;
+    const id = 1, name = '최예진';
+    const result = {};
+    result.userName = name;
+    try {
+
+      let totalKeywords = await TotalKeyword.findAll({
+        raw: true,
+        attributes: ['id'],
+        where: {
+          UserId: id
+        }
+      });
+      totalKeywordIds = totalKeywords.map(e => e.id);
+
+
+      const mostRecentDate = await KeywordByDate.findOne({
+        raw: true,
+        attributes: ['date'],
+        order: [['date', 'DESC']],
+        where: {
+          TotalKeywordId: {
+            [Op.in]: totalKeywordIds
+          }
+        }
+      });
+      const currentSelectedKeywords = await KeywordByDate.findAll({
+        raw: true,
+        where: {
+          date: mostRecentDate.date
+        },
+        order: [['priority', 'ASC']],
+        include: [
+          {
+            model: TotalKeyword,
+            where: {
+              UserId: id,
+            },
+            include: [
+              {
+                model: Keyword,
+                attributes: ['name']
+              }
+            ]
+          }
+        ]
+      });
+      const keywords = [];
+      currentSelectedKeywords.forEach(o => {
+        keywords.push(o['TotalKeyword.Keyword.name']);
+      })
+      result.keywords = keywords;
+      return res
+        .status(statusCode.OK)
+        .send(util.success(statusCode.OK, '마이페이지 조회 성공', result));
+    } catch (err) {
+      console.log(err);
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.INTERNAL_SERVER_ERROR));
+    }
+  }
 }
