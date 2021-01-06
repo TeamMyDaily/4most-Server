@@ -150,6 +150,7 @@ module.exports = {
           .send(ut.fail(sc.BAD_REQUEST, rm.NO_USER));
       }
       const weekGoal = await WeekGoal.findAll({
+        raw: true,
         limit: 1,
         order: [['date', 'DESC']],
         where: {
@@ -177,11 +178,13 @@ module.exports = {
           }
         ]
       });
-      
-      console.log(totalKeywords);
+
+      console.log()
       const result = {};
-      result.goal = weekGoal.goal;
       result.keywordName = keywordName;
+      result.goal = weekGoal[0]['goal'];
+      result.isGoalCompleted = !!weekGoal[0]['isGoalCompleted'];
+      
       result.tasks = [];
       totalKeywords.forEach(o => {
         let task = {};

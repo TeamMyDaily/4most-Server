@@ -9,7 +9,8 @@ router.get('/', function(req, res, next) {
 
 // router.use('/reports', authUtils.checkToken, require('./reports'));
 router.use('/reports', require('./reports'));
-router.use('/reviews', authUtils.checkToken, require('./reviews'));
+//router.use('/reviews', authUtils.checkToken, require('./reviews'));
+router.use('./reviews', require('./reviews'));
 router.use('/keywords', require('./keywords'));
 router.use('/tasks', require('./tasks'));
 router.use('/users', require('./users'));
