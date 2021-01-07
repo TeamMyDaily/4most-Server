@@ -9,7 +9,8 @@ module.exports = {
   sign: async (user) => {
     const payload = {
       id: user.id,
-      name: user.userName
+      name: user.userName,
+      email: user.email
     };
     const result = {
       accessToken: jwt.sign(payload, secretKey, options),

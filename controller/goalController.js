@@ -6,20 +6,24 @@ const rm = require('../modules/responseMessage');
 const { formatters } = require('debug');
 
 module.exports = {
+  /* 전체 목표 조회 */
   readAll: async (req, res)  => {
     // const { id } = req.decoded;
     const id = 1;
     const { start, end }  = req.query;
     const startDate = new Date(start);
     const endDate = new Date(end);
+    if (!start || !end ) {
+      console.log('필요한 정보가 없습니다.');
+      return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
+    }
     try {
-      const user = await User.findOne({where: {id: id}});
       const mostRecentDate = await KeywordByDate.findAll({
         limit: 1,
         attributes: ['date'],
         where: {
             date: {
-                [Op.lt]: endDate,
+                [Op.lte]: endDate,
             }
         },
         order : [['date', 'DESC']],
@@ -51,30 +55,42 @@ module.exports = {
             }]
         }],
       });
-      console.log(selectedKeywords);
-      const result = new Array();
-            for (var selectedKeyword of selectedKeywords) {
-                const data = new Object() ;
-                data.totalKeywordId = selectedKeyword.TotalKeywordId;
-                data.priority = selectedKeyword.priority;
-                data.name = selectedKeyword.TotalKeyword.Keyword.name;
-                const weekGoal = selectedKeyword.TotalKeyword.WeekGoals;
-                if (weekGoal.length){
-                  data.weekGoalId = weekGoal[0].id;
-                  data.weekGoal = weekGoal[0].goal;
-                  data.isGoalCompleted = weekGoal[0].isGoalCompleted;
-                }
-                result.push(data);
-            }
+      const keywords = new Array();
+      const count = selectedKeywords.length;
+      for (var selectedKeyword of selectedKeywords) {
+        const data = new Object();
+        data.totalKeywordId = selectedKeyword.TotalKeywordId;
+        data.priority = selectedKeyword.priority;
+        data.name = selectedKeyword.TotalKeyword.Keyword.name;
+        const weekGoal = selectedKeyword.TotalKeyword.WeekGoals;
+        if (weekGoal.length) {
+          data.isGoalCreated = true;
+          data.weekGoalId = weekGoal[0].id;
+          data.weekGoal = weekGoal[0].goal;
+          data.isGoalCompleted = weekGoal[0].isGoalCompleted;
+        }
+        else{
+          data.isGoalCreated = false;
+        }
+        keywords.push(data);
+      }
+      const result = new Object();
+      result.count = count;
+      result.keywords = keywords;
       return res.status(sc.OK).send(ut.success(sc.OK, "목표 조회 성공", result));
     }catch (err) {
       console.log(err);
-      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "목표 조회 실패"));
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
   },
+  /* 목표 추가 */
   addGoal: async (req, res)  => {
+    const { totalKeywordId, goal } = req.body;
+    if(!totalKeywordId||!goal) {
+      console.log('필요한 정보가 없습니다.');
+      return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
+    }
     try{
-      const { totalKeywordId, goal } = req.body;
       const weekGoal = await WeekGoal.create({
         TotalKeywordId : totalKeywordId,
         goal: goal,
@@ -83,71 +99,78 @@ module.exports = {
       return res.status(sc.OK).send(ut.success(sc.OK, "목표 추가 성공", weekGoal));
     }catch (err) {
       console.log(err);
-      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "목표 추가 실패"));
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
   },
+  /* 목표 달성여부 설정(완료->미완료, 미완료->완료) */
   updateGoal: async (req, res) => {
+    const { weekGoalId }  = req.params;
+    if(!weekGoalId) {
+      console.log('필요한 정보가 없습니다.');
+      return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
+    }
     try{
-      const { weekGoalIds } = req.body;
-      for (var weekGoalId of weekGoalIds) {
-        const weekGoal = await WeekGoal.findOne({where: { id: weekGoalId }});
-        if (weekGoal.isGoalCompleted){
-          await WeekGoal.update({
-            isGoalCompleted : false
-          },{
-            where: { id: weekGoalId }
-          })
-        }
-        else {
-          await WeekGoal.update({
-            isGoalCompleted : true
-          },{
-            where: { id: weekGoalId }
-          })
-        }                    
-      }
-      const weekGoals = await WeekGoal.findAll({
-        where: {
-          id : weekGoalIds
-        }
+      const weekGoal = await WeekGoal.findOne({where: { id: weekGoalId }})
+      const result = await WeekGoal.update({
+        isGoalCompleted: Math.abs(weekGoal.isGoalCompleted-1)
+      },{
+        where: {id: weekGoalId}
       });
-      // console.log(weekGoals)
-      return res.status(sc.OK).send(ut.success(sc.OK, "목표 달성여부 설정 완료", weekGoals));
+      if (!result){
+        return res.status(sc.NOT_MODIFIED).send(ut.fail(sc.NOT_MODIFIED, "목표 달성여부 설정 실패"));
+      };
+      return res.status(sc.OK).send(ut.success(sc.OK, "목표 달성여부 설정 완료"));
     } catch (err) {
       console.log(err);
-      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "목표 달성여부 설정 실패"));
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
   },
+  /* 목표 변경 */
   changeGoal: async(req, res) => {
+    const { weekGoalId } = req.params;
+    const { goal } = req.body;
+    if(!weekGoalId || !goal ){
+      console.log('필요한 정보가 없습니다.');
+      return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
+    }
     try {
-      const { weekGoalId } = req.params;
-      const { goal } = req.body;
-      await WeekGoal.update(
+      result = await WeekGoal.update(
         {
           goal : goal
         },{
           where: { id: weekGoalId }
         }
       )
+      if(!result) {
+        return res.status(sc.NOT_MODIFIED).send(ut.fail(sc.NOT_MODIFIED, "목표 수정 실패"));
+      }
       const weekGoal = await WeekGoal.findOne({
         where: { id: weekGoalId }
       })
       return res.status(sc.OK).send(ut.success(sc.OK, "목표 수정 완료", weekGoal));
     } catch (err) {
       console.log(err);
-      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "목표 수정 실패"));
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
   },
+  /* 목표 삭제 */
   deleteGoal: async(req, res) => {
+    const { weekGoalId } = req.params;
+    if (!weekGoalId){
+      console.log('필요한 정보가 없습니다.');
+      return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
+    }
     try{
-      const { weekGoalId } = req.params;
       const weekGoal = await WeekGoal.destroy({
         where: { id: weekGoalId }
       })
+      if(!weekGoal){
+        return res.status(sc.NOT_MODIFIED).send(ut.fail(sc.NOT_MODIFIED, "목표 삭제 실패"));
+      }
       return res.status(sc.OK).send(ut.success(sc.OK, "목표 삭제 완료"));
     } catch (err) {
       console.log(err);
-      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "목표 삭제 실패"));
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
     
   }

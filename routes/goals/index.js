@@ -4,9 +4,9 @@ const goalController = require('../../controller/goalController');
 const authUtil = require('../../middlewares/authUtil')
 
 router.get('/', goalController.readAll);
-router.put('/', goalController.addGoal);
-router.post('/', goalController.updateGoal);
-router.post('/:weekGoalId', goalController.changeGoal);
+router.post('/', goalController.addGoal);
+router.put('/:weekGoalId', goalController.changeGoal);
+router.put('/completion/:weekGoalId', goalController.updateGoal);
 router.delete('/:weekGoalId', goalController.deleteGoal);
 
 
