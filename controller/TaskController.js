@@ -13,6 +13,7 @@ module.exports = {
             //const { date } = req.query; //date형식 밀리세컨드
             const date = 1609662202000;
             const now = new Date(date);
+            //const now = new Date(date*1);
             const startTime = new Date(new Date(date).setHours(0,0,0));
             const mostRecentDate = await KeywordByDate.findAll({
                 limit: 1,
@@ -61,7 +62,8 @@ module.exports = {
                         //해당 날짜 기준 그 다음날보다는 작고 mostRecentDate의 date보다는 크거나 같은 날에 작성된 기록이어야 한다.
                         //하루는 86400초
                         date: { [Op.and]: { [Op.lte]: now, [Op.gte]: startTime }}
-                    }
+                    },
+                    attributes: ['id', 'title'],
                 })
                 data.tasks = Tasks
                 result.push(data);
@@ -129,7 +131,7 @@ module.exports = {
                 where: {id: taskId}
             });
             if (!task) {
-                return res.status(sc.OK).send(ut.success(sc.OK, "테스크 수정 실패"));
+                return res.status(sc.NOT_MODIFIED).send(ut.fail(sc.NOT_MODIFIED, "테스크 수정 실패"));
             }
             return res.status(sc.OK).send(ut.success(sc.OK, "테스크 수정 성공"));
         }catch (err){
@@ -149,7 +151,7 @@ module.exports = {
                 where: { id: taskId }
             });
             if (!task) {
-                return res.status(sc.OK).send(ut.success(sc.OK, "테스크 삭제 실패"));
+                return res.status(sc.NOT_MODIFIED).send(ut.fail(sc.NOT_MODIFIED, "테스크 수정 실패"));
             }
             return res.status(sc.OK).send(ut.success(sc.OK, "테스크 삭제 성공"));
         }catch (err){

@@ -11,8 +11,8 @@ module.exports = {
     // const { id } = req.decoded;
     const id = 1;
     const { start, end }  = req.query;
-    const startDate = new Date(start);
-    const endDate = new Date(end);
+    const startDate = new Date(start*1);
+    const endDate = new Date(end*1);
     if (!start || !end ) {
       console.log('필요한 정보가 없습니다.');
       return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
@@ -85,17 +85,20 @@ module.exports = {
   },
   /* 목표 추가 */
   addGoal: async (req, res)  => {
-    const { totalKeywordId, goal } = req.body;
+    const { startDate, totalKeywordId, goal } = req.body;
+    console.log(new Date(startDate))
     if(!totalKeywordId||!goal) {
       console.log('필요한 정보가 없습니다.');
       return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
     }
     try{
+      const date = new Date(startDate);
       const weekGoal = await WeekGoal.create({
         TotalKeywordId : totalKeywordId,
         goal: goal,
-        date : new Date()
+        date : date
       })
+      console.log(weekGoal);
       return res.status(sc.OK).send(ut.success(sc.OK, "목표 추가 성공", weekGoal));
     }catch (err) {
       console.log(err);
@@ -136,7 +139,8 @@ module.exports = {
     try {
       result = await WeekGoal.update(
         {
-          goal : goal
+          goal : goal,
+          date : new Date() //수정시간으로 날짜 업데이트
         },{
           where: { id: weekGoalId }
         }

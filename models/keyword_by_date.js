@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     priority: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     date: {
       type: DataTypes.DATE,
