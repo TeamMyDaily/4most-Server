@@ -57,6 +57,7 @@ module.exports = {
       });
       const keywords = new Array();
       const count = selectedKeywords.length;
+      let notSetGoalCount = 0;
       for (var selectedKeyword of selectedKeywords) {
         const data = new Object();
         data.totalKeywordId = selectedKeyword.TotalKeywordId;
@@ -70,12 +71,14 @@ module.exports = {
           data.isGoalCompleted = weekGoal[0].isGoalCompleted;
         }
         else{
+          notSetGoalCount += 1;
           data.isGoalCreated = false;
         }
         keywords.push(data);
       }
       const result = new Object();
       result.count = count;
+      result.notSetGoalCount = notSetGoalCount;
       result.keywords = keywords;
       return res.status(sc.OK).send(ut.success(sc.OK, "목표 조회 성공", result));
     }catch (err) {

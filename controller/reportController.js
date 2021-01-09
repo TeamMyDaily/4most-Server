@@ -65,7 +65,7 @@ module.exports = {
                 attributes: ['goal'],
                 where: {
                   [Op.and] : [{ 
-                    date: { [Op.gte]: startDate},
+                    date: { [Op.gte]: startDate },
                     date: { [Op.lte]: endDate }
                   }]
                 }

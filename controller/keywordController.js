@@ -65,7 +65,11 @@ module.exports = {
         },{
           where: {TotalKeywordId: totalKeyword.id}
         });
+        result.push(updated);
       };
+      // if(!result.every( function( x ) { return x = true } ) ){
+      //   return res.status(sc.NOT_MODIFIED).send(ut.fail(sc.NOT_MODIFIED, "키워드 정의 실패"));
+      // }
       return res.status(sc.OK).send(ut.success(sc.OK, "키워드 정의 등록 완료"));
     } catch(err) {
       console.log(err);
