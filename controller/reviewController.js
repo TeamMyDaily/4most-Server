@@ -24,8 +24,8 @@ module.exports = {
           .send(ut.fail(sc.BAD_REQUEST, rm.NO_USER));
       }
 
-      const startDate = new Date(start);
-      const endDate = new Date(end);
+      const startDate = new Date(+start);
+      const endDate = new Date(+end);
       const result = {};
       const review = await Review.findOne({
         raw: true,
@@ -73,9 +73,9 @@ module.exports = {
           .status(sc.BAD_REQUEST)
           .send(ut.fail(sc.BAD_REQUEST, rm.NO_USER));
       }
-      const startDate = new Date(start);
-      const endDate = new Date(end);
-      const nowDate = new Date(now);
+      const startDate = new Date(+start);
+      const endDate = new Date(+end);
+      const nowDate = new Date(+now);
 
       let inputDate;
       //이렇게 해도 괜찮은걸까

@@ -167,7 +167,7 @@ module.exports = {
         .send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
     }
   
-    const startDate = new Date(start), endDate = new Date(end);
+    const startDate = new Date(+start), endDate = new Date(+end);
 
 
     //한 개의 키워드에 대해서!!
