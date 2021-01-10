@@ -8,13 +8,10 @@ module.exports = {
     /* 전체 기록 조회 */
     readAll: async(req, res) => {
         try{
-            const id = 1;
-            // const { id } = req.decoded;
-            //const { date } = req.query; //date형식 밀리세컨드
-            const date = 1609662202000;
-            const now = new Date(date);
-            //const now = new Date(date*1);
-            const startTime = new Date(new Date(date).setHours(0,0,0));
+            const { id } = req.decoded;
+            const { date } = req.query; //date형식 밀리세컨드
+            const now = new Date(date*1);
+            const startTime = new Date(new Date(date*1).setHours(0,0,0));
             const mostRecentDate = await KeywordByDate.findAll({
                 limit: 1,
                 attributes: ['date'],
