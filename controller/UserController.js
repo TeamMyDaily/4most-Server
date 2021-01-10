@@ -95,8 +95,8 @@ module.exports ={
   },
 
   readOne: async (req, res) => {
-    // const { id, name } = req.decoded;
-    const id = 1, name = '최예진';
+    const { id, name } = req.decoded;
+    //const id = 1, name = '최예진';
     const result = {};
     result.userName = name;
     try {

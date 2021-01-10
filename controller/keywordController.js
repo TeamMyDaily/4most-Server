@@ -8,8 +8,8 @@ const keyword = require('../models/keyword');
 module.exports = {
   /* 키워드 선택 */
   selectKeywords: async (req, res) => {
-    const id = 2;
-    //const { id } = req.decoded;
+    // const id = 2;
+    const { id } = req.decoded;
     const { keywords } = req.body; // "keywords": ["단어1", "단어2","단어3"]
     const keywordsByDate = []
     if (!keywords) {
@@ -51,8 +51,8 @@ module.exports = {
   },
   /* 키워드 정의 */
   defineKeywords: async (req, res) => {
-    //const { id } = req.decoded;
-    const id = 3;
+    const { id } = req.decoded;
+    // const id = 3;
     const { keywords } = req.body;
     const result = new Array();
     try{
@@ -107,8 +107,8 @@ module.exports = {
   },
   /* 키워드 추가 */
   addKeyword: async (req, res)  => {
-    const id = 3;
-    // const { id } = req.decoded;
+    // const id = 3;
+    const { id } = req.decoded;
     const { name } = req.body;
     if (!name) {
       console.log('필요한 값이 없습니다!');
@@ -143,8 +143,8 @@ module.exports = {
     }
   },
   deleteKeyword: async (req, res)  => {
-    // const { id } = req.decoded;
-    const id = 3;
+    const { id } = req.decoded;
+    // const id = 3;
     const { keywords } = req.body;
     if (!keywords) {
       console.log('필요한 값이 없습니다!');
