@@ -7,13 +7,11 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-// router.use('/reports', authUtils.checkToken, require('./reports'));
-router.use('/reports', require('./reports'));
-//router.use('/reviews', authUtils.checkToken, require('./reviews'));
-router.use('/reviews', require('./reviews'));
-router.use('/keywords', require('./keywords'));
-router.use('/tasks', require('./tasks'));
+router.use('/reports', authUtils.checkToken, require('./reports'));
+router.use('/reviews', authUtils.checkToken, require('./reviews'));
+router.use('/keywords', authUtils.checkToken, require('./keywords'));
+router.use('/tasks', authUtils.checkToken, require('./tasks'));
 router.use('/users', require('./users'));
-router.use('/goals', require('./goals'));
+router.use('/goals', authUtils.checkToken, require('./goals'));
 
 module.exports = router;
