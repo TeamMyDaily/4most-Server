@@ -9,8 +9,8 @@ module.exports = {
   readWeekReview: async (req, res) => {
     const { start, end }  = req.query;
 
-    // const { id } = req.decoded;
-    const id = 1; //development
+    const { id } = req.decoded;
+    // const id = 1; //development
 
     if (!id || !start || !end) {
       console.log('필요한 정보가 없습니다.');
@@ -157,8 +157,8 @@ module.exports = {
   readWeekReviewDetail: async (req, res) => {
     const { start, end } = req.query;
     const { totalKeywordId } = req.body;
-    // const { id } = req.decoded;
-    const id = 1; //development
+    const { id } = req.decoded;
+    // const id = 1; //development
 
     if (!id || !start || !end) {
       console.log('필요한 정보가 없습니다.');

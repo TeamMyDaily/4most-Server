@@ -8,8 +8,8 @@ const { formatters } = require('debug');
 module.exports = {
   /* 전체 목표 조회 */
   readAll: async (req, res)  => {
-    // const { id } = req.decoded;
-    const id = 1;
+    const { id } = req.decoded;
+    // const id = 1;
     const { start, end }  = req.query;
     const startDate = new Date(start*1);
     const endDate = new Date(end*1);

@@ -77,8 +77,8 @@ module.exports = {
     /* 기록 생성. 날짜 클라한테서 받지 않음!!!! 작성하는 시간으로 저장 */
     createTask : async (req, res) => {
         const { totalKeywordId, title, detail, satisfaction } = req.body;
-        const id = 1;
-        // const { id } = req.decoded;
+        // const id = 1;
+        const { id } = req.decoded;
         // const name = await Keyword.findOne({where: { name: name }});
         if (!totalKeywordId|| !title || !detail || !satisfaction ){
             console.log('필요한 값이 없습니다!');

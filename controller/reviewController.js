@@ -7,8 +7,8 @@ const { Op } = require('sequelize');
 module.exports = {
   readOne: async (req, res) => {
     const { start, end } = req.query;
-    // const userId = req.decoded;
-    const userId = 1;
+    const userId = req.decoded;
+    // const userId = 1;
     if (!userId || !start || !end) {
       console.log('필요한 정보가 없습니다.');
       return res
@@ -56,9 +56,9 @@ module.exports = {
   },
   createOne: async (req, res) => {
     const { start, end, now, good, bad, next } = req.body;
-    // const { id } = req.decoded;
+    const { id } = req.decoded;
     console.log(req.body);
-    const id = 1;
+    // const id = 1;
     if (!id || !start || !end) {
       console.log('필요한 정보가 없습니다.');
       return res
