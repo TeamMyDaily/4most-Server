@@ -12,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
         goal: {
             type: DataTypes.STRING(30),
             allowNull: true,
-          },
+        },
         isGoalCompleted: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
-          },
+        },
         date: {
             type: DataTypes.DATE,
             allowNull: false,

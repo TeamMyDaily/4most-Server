@@ -36,11 +36,12 @@ module.exports = {
         })
         const keywordByDate = await KeywordByDate.create({
           TotalKeywordId: totalKeyword.id,
+          date: new Date()
         })
-        const weekGoal = await WeekGoal.create({
-          TotalKeywordId: totalKeyword.id,
-          date: keywordByDate.date
-        })
+        // const weekGoal = await WeekGoal.create({
+        //   TotalKeywordId: totalKeyword.id,
+        //   date: keywordByDate.date
+        // })
         keywordsByDate.push(keywordByDate);
       } 
       return res.status(sc.OK).send(ut.success(sc.OK, "키워드 설정 완료", keywordsByDate)); 

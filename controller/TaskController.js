@@ -86,7 +86,8 @@ module.exports = {
                 TotalKeywordId: totalKeywordId,
                 title: title,
                 detail: detail,
-                satisfaction: satisfaction
+                satisfaction: satisfaction,
+                date: new Date()
             });
             return res.status(sc.OK).send(ut.success(sc.OK, "테스크 생성 성공", task));
         } catch (err) {
