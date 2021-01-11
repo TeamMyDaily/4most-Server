@@ -28,16 +28,26 @@ module.exports = {
         return res
           .status(sc.BAD_REQUEST)
           .send(ut.fail(sc.BAD_REQUEST, rm.NO_USER));
-      }      
+      }   
+
+      const data = new Object();
 
       const mostRecentDate = await KeywordByDate.findAll({
         limit: 1,
         attributes: ['date'],
         where: {
-          [Op.and]: [{ date : { [Op.lte]: endDate }}, { date : { [Op.gte]: startDate }}]
+           date : { [Op.lt]: endDate, [Op.gte]: startDate }
         },
         order: [['date', 'DESC']]
       });
+      console.log(mostRecentDate);
+
+      if(!mostRecentDate[0]) {
+        data.keywordsExist = false;
+        return res
+          .status(sc.OK)
+          .send(ut.success(sc.OK, rm.READ_REPORT_SUCCESS, data));
+      }
       
       //여기서 그 주차에 있었던 키워드들은 다 가지고 와야 함
       const queryResult = await KeywordByDate.findAll({
@@ -85,66 +95,44 @@ module.exports = {
         ]
       });
 
-      const data = new Object();
+      const result = {};
       for (let o of queryResult){
         if (o.TotalKeyword.Tasks.length) {
           const name= o.TotalKeyword.Keyword.name;
           //같은 키워드라도 한 주 중간에 키워드 바뀐 경우 KeywordByDate객체가 달라서 따로 출력된다. 이를 막기 위해 조건문 이용
-          if(name in data) { 
+          if(name in result) { 
             if(o.TotalKeyword.WeekGoals.length){
-              data[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
+              result[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
             }
             else{
-              data[name].weekGoal = undefined
+              result[name].weekGoal = undefined
             }
-            let sum = data[name].taskSatisAvg*data[name].taskCnt;
+            let sum = result[name].taskSatisAvg*result[name].taskCnt;
             for (let task of o.TotalKeyword.Tasks) {
               sum+=task.satisfaction;
             }
-            data[name].taskCnt += o.TotalKeyword.Tasks.length;
-            data[name].taskSatisAvg = (sum/data[name].taskCnt).toFixed(1);
+            result[name].taskCnt += o.TotalKeyword.Tasks.length;
+            result[name].taskSatisAvg = (sum/result[name].taskCnt).toFixed(1);
           }
           else {
-            data[name] = new Object();
+            result[name] = new Object();
             if(o.TotalKeyword.WeekGoals.length){
-              data[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
+              result[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
             }
-            data[name].taskCnt = o.TotalKeyword.Tasks.length;
+            result[name].taskCnt = o.TotalKeyword.Tasks.length;
             let sum = 0;
             for (let task of o.TotalKeyword.Tasks) {
               sum+=task.satisfaction;
             }
-            data[name].taskSatisAvg = (sum/data[name].taskCnt).toFixed(1);
+            result[name].taskSatisAvg = (sum/result[name].taskCnt).toFixed(1);
           }
         }
       }
-
-      // 객체 하나: 키워드 이름, 금주 목표, task 개수, 만족도 평균
-      // const result = [];
-
-      // priority -1 이 result의 인덱스가 된다. 
-      // for(let o of queryResult) {
-      //   if (!result[o.priority-1]) result[o.priority-1] = new Object();
-      //   result[o.priority-1].totalKeywordId = o['TotalkeywordId'];
-      //   result[o.priority-1].keywordName = o['TotalKeyword.Keyword.name'];
-      //   result[o.priority-1].WeekGoal = o['TotalKeyword.WeekGoal.goal'];
-      //   if( result[o.priority-1].taskCnt ) result[o.priority-1].taskCnt++;
-      //   else result[o.priority-1].taskCnt = 1;
-      //   if( result[o.priority-1].taskSatisAvg ){
-      //     result[o.priority-1].taskSatisAvg += o['TotalKeyword.Tasks.satisfaction'];
-      //   } else {
-      //     result[o.priority-1].taskSatisAvg = o['TotalKeyword.Tasks.satisfaction'];
-      //   }
-      // }
-      
-      // result.forEach(o => {
-      //   let avg = o.taskSatisAvg/o.taskCnt
-      //   o.taskSatisAvg = avg.toFixed(1);
-      // })
-
+      data.keywordsExist = true;
+      data.result = result;
       return res
         .status(sc.OK)
-        .send(ut.success(sc.OK, rm.READ_REPORT_SUCCESS,data));
+        .send(ut.success(sc.OK, rm.READ_REPORT_SUCCESS, data));
       
     } catch (err) {
       console.log(err);
