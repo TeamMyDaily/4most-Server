@@ -13,4 +13,8 @@ router.post ('/new', keywordController.addKeyword);
 /* [DELETE] localhost:3000/keywords */
 router.delete('/', keywordController.deleteKeyword);
 
+/* [GET] /keywords/taskKeyword */
+router.get('/taskKeyword', keywordController.readTaskKeyword);
+/* [GET] /keywords/keywordList */
+router.get('/keywordList', keywordController.readKeywordList);
 module.exports = router;
