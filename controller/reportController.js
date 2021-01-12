@@ -133,7 +133,6 @@ module.exports = {
       //결과 배열로 변환해서 response에 넣어주기 위해 한 번 더 반복문 실행
       data.result = new Array();
       for (let keyword of Object.keys(results)) {
-        console.log(results[keyword]);
         data.result.push(results[keyword]);
       }
       return res.status(sc.OK).send(ut.success(sc.OK, rm.READ_REPORT_SUCCESS, data));

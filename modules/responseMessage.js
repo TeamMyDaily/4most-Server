@@ -55,6 +55,9 @@ module.exports = {
   DELETE_LIKE_FAIL: "게시글 좋아요 취소하기 실패",
   ALREADY_LIKED: '이미 좋아요가 되어 있음',
 
+/** Reports */
+READ_REPORT_SUCCESS: "리포트 조회 성공",
+
   /* 서버에러 */
   INTERNAL_SERVER_ERROR: "서버 내부 오류",
 

@@ -153,7 +153,7 @@ module.exports = {
                 where: { id: taskId }
             });
             if (!task) {
-                return res.status(sc.NOT_MODIFIED).send(ut.fail(sc.NOT_MODIFIED, "테스크 수정 실패"));
+                return res.status(sc.NOT_MODIFIED).send(ut.fail(sc.NOT_MODIFIED, "테스크 삭제 실패"));
             }
             return res.status(sc.OK).send(ut.success(sc.OK, "테스크 삭제 성공"));
         }catch (err){
