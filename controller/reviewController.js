@@ -24,7 +24,7 @@ module.exports = {
         attributes:['good', 'bad', 'next'],
         where: {
           UserId: id,
-          date: {[Op.gte]: startDate, [Op.lte]: endDate}
+          date: {[Op.gte]: startDate, [Op.lt]: endDate}
         }
       });
 
@@ -69,12 +69,12 @@ module.exports = {
       const startDate = new Date(+start);
       const endDate = new Date(+end);
       const nowDate = new Date(+now);
-
+      const createEndDate = new Date(+end -1);
       const alreadyWritten = await Review.findOne({
         where: {
           date: {
             [Op.gte]: startDate,
-            [Op.lte]: endDate
+            [Op.lt]: endDate
           }
         }
       });
@@ -85,7 +85,7 @@ module.exports = {
         if (startDate <= nowDate && nowDate <= endDate){
           inputDate = nowDate
         } else {
-          inputDate = endDate
+          inputDate = createEndDate;
         }
         switch(subType) {
           case 1: 
@@ -106,7 +106,7 @@ module.exports = {
               where: {
                 date: {
                   [Op.gte]: startDate,
-                  [Op.lte]: endDate,
+                  [Op.lt]: endDate,
                 }
               } 
             });
@@ -116,7 +116,7 @@ module.exports = {
               where: {
                 date: {
                   [Op.gte]: startDate,
-                  [Op.lte]: endDate,
+                  [Op.lt]: endDate,
                 }
               } 
             });
@@ -126,7 +126,7 @@ module.exports = {
               where: {
                 date: {
                   [Op.gte]: startDate,
-                  [Op.lte]: endDate,
+                  [Op.lt]: endDate,
                 }
               } 
             });
@@ -136,7 +136,7 @@ module.exports = {
           attributes: ['good', 'bad', 'next'],
           where: {
             UserId: id,
-            date: {[Op.gte]: startDate, [Op.lte]: endDate}
+            date: {[Op.gte]: startDate, [Op.lt]: endDate}
           }
         });
       }
