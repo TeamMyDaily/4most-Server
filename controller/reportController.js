@@ -76,7 +76,7 @@ module.exports = {
                 where: {
                   [Op.and] : [{ 
                     date: { [Op.gte]: startDate },
-                    date: { [Op.lte]: endDate }
+                    date: { [Op.lt]: endDate }
                   }]
                 }
               },
@@ -86,7 +86,7 @@ module.exports = {
                 where: {
                   [Op.and] : [{ 
                     date: { [Op.gte]: startDate},
-                    date: { [Op.lte]: endDate }
+                    date: { [Op.lt]: endDate }
                   }]
                 }
               }
@@ -183,7 +183,7 @@ module.exports = {
         order: [['date', 'DESC']],
         where: {
           totalKeywordId: totalKeywordId,
-          date : { [Op.lte]: endDate , [Op.gte]: startDate }
+          date : { [Op.lt]: endDate , [Op.gte]: startDate }
         }
       });
       
