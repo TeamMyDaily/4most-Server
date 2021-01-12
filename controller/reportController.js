@@ -116,6 +116,7 @@ module.exports = {
           }
           else {
             results[name] = new Object();
+            results[name].totalKeywordId = o.TotalKeyword.id;
             results[name].keyword = name;
             if(o.TotalKeyword.WeekGoals.length){
               results[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
