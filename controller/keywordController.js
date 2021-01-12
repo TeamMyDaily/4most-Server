@@ -4,6 +4,7 @@ const sc = require('../modules/statusCode');
 const rm = require('../modules/responseMessage');
 const { formatters } = require('debug');
 const keyword = require('../models/keyword');
+const { Op } = require('sequelize');
 
 module.exports = {
   /* 키워드 선택 */
@@ -165,6 +166,151 @@ module.exports = {
     } catch(err) {
       console.log(err);
       return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "키워드 추가 실패"));    
+    }
+  },
+  readTaskKeyword: async (req, res) => {
+    const { id } = req.decoded;
+    //const id = 1;
+    const result = {};
+    try {
+
+      let totalKeywords = await TotalKeyword.findAll({
+        raw: true,
+        attributes: ['id'],
+        where: {
+          UserId: id
+        }
+      });
+      totalKeywordIds = totalKeywords.map(e => e.id);
+
+
+      const mostRecentDate = await KeywordByDate.findOne({
+        raw: true,
+        attributes: ['date'],
+        order: [['date', 'DESC']],
+        where: {
+          TotalKeywordId: {
+            [Op.in]: totalKeywordIds
+          }
+        }
+      });
+      const currentSelectedKeywords = await KeywordByDate.findAll({
+        raw: true,
+        where: {
+          date: mostRecentDate.date
+        },
+        order: [['priority', 'ASC']],
+        include: [
+          {
+            model: TotalKeyword,
+            where: {
+              UserId: id,
+            },
+            include: [
+              {
+                model: Keyword,
+                attributes: ['name']
+              }
+            ]
+          }
+        ]
+      });
+      const keywords = [];
+      currentSelectedKeywords.forEach(o => {
+        keywords.push(o['TotalKeyword.Keyword.name']);
+      })
+      result.keywords = keywords;
+      return res
+        .status(sc.OK)
+        .send(ut.success(sc.OK, '마이페이지 기록키워드 조회 성공', result));
+    } catch (err) {
+      console.log(err);
+      return res
+        .status(sc.INTERNAL_SERVER_ERROR)
+        .send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
+    }
+  },
+  readKeywordList: async (req, res) => {
+    const { id } = req.decoded;
+    try {
+      //KeywordByDate에서 가장 최근 키워드를 뽑아온당!
+      const totalKeywordObjs = await TotalKeyword.findAll({
+        attributes: ['id'],
+        where: {
+          UserId: id,
+        }
+      });
+      
+      const totalKeywordIds = totalKeywordObjs.map(e => e.id);
+      const mostRecentDateObj = await KeywordByDate.findOne({
+        attributes: ['date'],
+        where: {
+          TotalKeywordId: {
+            [Op.in]: totalKeywordIds,
+          }
+        },
+        order: [['date', 'DESC']]
+      });
+      
+      const mostRecentDate = mostRecentDateObj.date;
+      // 지금 선택되어있는 키워드의 totalKeywordId를 가져온다.
+      const KeywordByDates = await KeywordByDate.findAll({
+        attributes: ['TotalKeywordId'],
+        where: {
+          date: mostRecentDate,
+        }
+      });
+
+      const selectedTotalKeywordIds = KeywordByDates.map(e => e.TotalKeywordId);
+      const notSelectedTotalKeywordIds = totalKeywordIds.filter(e => !selectedTotalKeywordIds.includes(e));
+
+      const selectedKeywords = await TotalKeyword.findAll({
+        where: {
+          id: {
+            [Op.in]: selectedTotalKeywordIds
+          }
+        },
+        include: [{
+          model: Keyword,
+          attributes: ['name']
+        }]
+      });
+      const notSelectedKeywords = await TotalKeyword.findAll({
+        where: {
+          id: {
+            [Op.in]: notSelectedTotalKeywordIds
+          }
+        },
+        include: [
+          {
+            model: Keyword,
+            attributes: ['name']
+          }
+        ]
+      });
+      const result = [];
+      selectedKeywords.forEach(e => {
+        const obj = {};
+        obj.isSelected = true;
+        obj.name = e.Keyword.name;
+        result.push(obj);
+      })
+      notSelectedKeywords.forEach(e => {
+        const obj = {};
+        obj.isSelected = false;
+        obj.name = e.Keyword.name;
+        result.push(obj);
+      })
+      //TotalKeyword에서 사용자가 사용하는 키워드를 KeywordByDate에 있는 애들을 제외하고 가져온다!
+
+      return res
+        .status(sc.OK)
+        .send(ut.success(sc.OK, '마이페이지 키워드 리스트 조회 성공', result));
+    }catch (err) {
+      console.log(err);
+      return res
+        .status(sc.INTERNAL_SERVER_ERROR)
+        .send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
   },
 }
