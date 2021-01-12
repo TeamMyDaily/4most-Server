@@ -7,6 +7,7 @@ const jwt = require('../modules/jwt')
 const { smtpTransport } = require('../config/email');
 const { Op } = require('sequelize');
 const crypto = require('crypto');
+const { response } = require('express');
 
 var generateRandom = function (min, max) {
   var ranNum = Math.floor(Math.random()*(max-min+1)) + min;
@@ -102,8 +103,8 @@ module.exports ={
 
     if (!isCorrect) {
       return res
-        .status(statusCode.MISS_MATCH_PW)
-        .send(util.fail(statusCode.MISS_MATCH_PW, responseMessage.MISS_MATCH_PW));
+        .status(statusCode.BAD_REQUEST)
+        .send(util.fail(statusCode.BAD_REQUEST, responseMessage.MISS_MATCH_PW));
     }
     const result = await User.destroy({
       where: {
@@ -119,13 +120,50 @@ module.exports ={
       .status(statusCode.OK)
       .send(util.success(statusCode.OK,'회원 탈퇴 성공'));
   },
-
-  changePassword: async (req, res) => {
+  checkPassword: async (req, res) => {
     const { id } = req.decoded;
     const { password } = req.body;
+    const isCorrect = await userService.checkPassword(id, password);
     
+    if (!password) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(util.fail(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    }
+    
+    const result = {};
+    result.isCorrect = isCorrect;
+    console.log(result);
+    if(!isCorrect) {
+      return res
+        .status(statusCode.OK)
+        .send(util.success(statusCode.OK, responseMessage.MISS_MATCH_PW, result));
+    }
+    
+    return res
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, '비밀번호가 일치합니다', result));
+  },
+  changePassword: async (req, res) => {
+    const { id } = req.decoded;
+    const { password, newPassword } = req.body;
+
+    if (!password || !newPassword) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(util.fail(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    }
+    
+    const isCorrect = await userService.checkPassword(id, password);
+
+    if(!isCorrect) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(util.fail(statusCode.BAD_REQUEST, responseMessage.MISS_MATCH_PW));
+    }
+
     const salt = crypto.randomBytes(64).toString('base64');
-    const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
+    const hashedPassword = crypto.pbkdf2Sync(newPassword, salt, 10000, 64, 'sha512').toString('base64');
     const result = await User.update({
       password: hashedPassword,
       salt: salt,
