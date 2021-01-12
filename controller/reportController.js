@@ -36,7 +36,7 @@ module.exports = {
         limit: 1,
         attributes: ['date'],
         where: {
-           date : { [Op.lt]: endDate, [Op.gte]: startDate }
+           date : { [Op.lt]: endDate, [Op.gt]: startDate }
         },
         order: [['date', 'DESC']]
       });
