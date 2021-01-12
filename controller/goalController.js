@@ -23,7 +23,7 @@ module.exports = {
         attributes: ['date'],
         where: {
             date: {
-                [Op.lte]: endDate,
+                [Op.lt]: endDate,
             }
         },
         order : [['date', 'DESC']],
@@ -53,7 +53,7 @@ module.exports = {
                 model: WeekGoal,
                 limit: 1,
                 where: {
-                  [Op.and]: [{ date : { [Op.lte]: endDate }}, { date : { [Op.gte]: startDate }}]
+                  [Op.and]: [{ date : { [Op.lt]: endDate }}, { date : { [Op.gte]: startDate }}]
                 },
                 order: [['date', 'DESC']],
             }]

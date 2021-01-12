@@ -36,11 +36,10 @@ module.exports = {
         limit: 1,
         attributes: ['date'],
         where: {
-           date : { [Op.lt]: endDate, [Op.gt]: startDate }
+           date : { [Op.lt]: endDate, [Op.gte]: startDate }
         },
         order: [['date', 'DESC']]
       });
-      console.log(mostRecentDate);
 
       if(!mostRecentDate[0]) {
         data.keywordsExist = false;
@@ -95,50 +94,53 @@ module.exports = {
         ]
       });
 
-      const result = {};
+      const results = {};
       for (let o of queryResult){
         if (o.TotalKeyword.Tasks.length) {
+          //const tempnew Object();
           const name= o.TotalKeyword.Keyword.name;
           //같은 키워드라도 한 주 중간에 키워드 바뀐 경우 KeywordByDate객체가 달라서 따로 출력된다. 이를 막기 위해 조건문 이용
-          if(name in result) { 
+          if(name in results) { 
             if(o.TotalKeyword.WeekGoals.length){
-              result[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
+              results[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
             }
             else{
-              result[name].weekGoal = undefined
+              results[name].weekGoal = undefined
             }
-            let sum = result[name].taskSatisAvg*result[name].taskCnt;
+            let sum = results[name].taskSatisAvg*results[name].taskCnt;
             for (let task of o.TotalKeyword.Tasks) {
               sum+=task.satisfaction;
             }
-            result[name].taskCnt += o.TotalKeyword.Tasks.length;
-            result[name].taskSatisAvg = (sum/result[name].taskCnt).toFixed(1);
+            results[name].taskCnt += o.TotalKeyword.Tasks.length;
+            results[name].taskSatisAvg = (sum/results[name].taskCnt).toFixed(1);
           }
           else {
-            result[name] = new Object();
+            results[name] = new Object();
+            results[name].keyword = name;
             if(o.TotalKeyword.WeekGoals.length){
-              result[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
+              results[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
             }
-            result[name].taskCnt = o.TotalKeyword.Tasks.length;
+            results[name].taskCnt = o.TotalKeyword.Tasks.length;
             let sum = 0;
             for (let task of o.TotalKeyword.Tasks) {
               sum+=task.satisfaction;
             }
-            result[name].taskSatisAvg = (sum/result[name].taskCnt).toFixed(1);
+            results[name].taskSatisAvg = (sum/results[name].taskCnt).toFixed(1);
           }
         }
       }
       data.keywordsExist = true;
-      data.result = result;
-      return res
-        .status(sc.OK)
-        .send(ut.success(sc.OK, rm.READ_REPORT_SUCCESS, data));
+      //결과 배열로 변환해서 response에 넣어주기 위해 한 번 더 반복문 실행
+      data.result = new Array();
+      for (let keyword of Object.keys(results)) {
+        console.log(results[keyword]);
+        data.result.push(results[keyword]);
+      }
+      return res.status(sc.OK).send(ut.success(sc.OK, rm.READ_REPORT_SUCCESS, data));
       
     } catch (err) {
       console.log(err);
-      return res
-        .status(sc.INTERNAL_SERVER_ERROR)
-        .send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }    
   },
 
@@ -150,9 +152,7 @@ module.exports = {
 
     if (!id || !start || !end) {
       console.log('필요한 정보가 없습니다.');
-      return res
-        .status(sc.BAD_REQUEST)
-        .send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
+      return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
     }
   
     const startDate = new Date(+start), endDate = new Date(+end);
@@ -173,9 +173,7 @@ module.exports = {
       const user = await User.findOne({ where: {id: id} });
       if (!user) {
         console.log('사용자를 찾을 수 없음');
-        return res
-          .status(sc.BAD_REQUEST)
-          .send(ut.fail(sc.BAD_REQUEST, rm.NO_USER));
+        return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NO_USER));
       }
       const weekGoal = await WeekGoal.findAll({
         raw: true,
@@ -183,7 +181,7 @@ module.exports = {
         order: [['date', 'DESC']],
         where: {
           totalKeywordId: totalKeywordId,
-          date : { [Op.lt]: endDate , [Op.gte]: startDate }
+          date : { [Op.lte]: endDate , [Op.gte]: startDate }
         }
       });
       
@@ -223,14 +221,10 @@ module.exports = {
         result.tasks.push(task);
       })
       
-      return res
-              .status(sc.OK)
-              .send(ut.success(sc.OK, '리포트 > 키워드별 조회 성공', result));
+      return res.status(sc.OK).send(ut.success(sc.OK, '리포트 > 키워드별 조회 성공', result));
     } catch (err) {
       console.log(err);
-      return res 
-              .status(sc.INTERNAL_SERVER_ERROR)
-              .send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
+      return res .status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
     
   },
