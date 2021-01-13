@@ -93,14 +93,14 @@ module.exports = {
           }
         ]
       });
-
+      console.log(queryResult);
       const results = {};
       for (let o of queryResult){
         if (o.TotalKeyword.Tasks.length) {
           //const tempnew Object();
           const name= o.TotalKeyword.Keyword.name;
           //같은 키워드라도 한 주 중간에 키워드 바뀐 경우 KeywordByDate객체가 달라서 따로 출력된다. 이를 막기 위해 조건문 이용
-          if(name in results) { 
+          if(name in results) {
             if(o.TotalKeyword.WeekGoals.length){
               results[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
             }
@@ -173,22 +173,16 @@ module.exports = {
 
       const keywordName = rawKeywordName.Keyword.name;
 
-      const user = await User.findOne({ where: {id: id} });
-      if (!user) {
-        console.log('사용자를 찾을 수 없음');
-        return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NO_USER));
-      }
+      
       const weekGoal = await WeekGoal.findAll({
         raw: true,
         limit: 1,
         order: [['date', 'DESC']],
         where: {
           totalKeywordId: totalKeywordId,
-          date : { [Op.lte]: endDate , [Op.gte]: startDate }
+          date : { [Op.lt]: endDate , [Op.gte]: startDate }
         }
       });
-      console.log(weekGoal);
-      const goalStartDate = weekGoal[0].date;
       
       const totalKeywords = await TotalKeyword.findAll({
         raw: true,
@@ -201,7 +195,7 @@ module.exports = {
             attributes: ['id', 'title', 'date', 'satisfaction'],
             where: {
               date: {
-                [Op.gte]: goalStartDate,
+                [Op.gte]: startDate, [Op.lt]: endDate,
               }
             }
           }
