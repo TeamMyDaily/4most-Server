@@ -6,10 +6,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    definition: {
-      type: DataTypes.STRING(200),
-      allowNull: true
-    },
     priority: {
       type: DataTypes.INTEGER,
       allowNull: true,

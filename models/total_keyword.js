@@ -21,11 +21,10 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id',
             }
         },
-        isCustom: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            defaultValue: false,
-        }
+        definition: {
+            type: DataTypes.STRING(200),
+            allowNull: true
+        },
     }, {
         freezeTableName: true,
         timestamps: false,
