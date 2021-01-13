@@ -80,6 +80,10 @@ module.exports = {
       return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
   },
+  readKeywordDef: async (req, res) => {
+    const { id } = req.decoded;
+    const { totalKeywordId } = req.query;
+  },
   /* 우선순위 설정 */
   setPriorities: async (req, res) => {
     // const id = 3;
@@ -224,7 +228,10 @@ module.exports = {
       });
       const keywords = [];
       currentSelectedKeywords.forEach(o => {
-        keywords.push(o['TotalKeyword.Keyword.name']);
+        const e = {};
+        e.totalKeywordId = o['TotalKeyword.id'];
+        e.name = o['TotalKeyword.Keyword.name'];
+        keywords.push(e);
       })
       result.keywords = keywords;
       return res
