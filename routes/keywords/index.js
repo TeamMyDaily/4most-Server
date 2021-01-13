@@ -15,6 +15,10 @@ router.delete('/', keywordController.deleteKeyword);
 
 /* [GET] /keywords/taskKeyword */
 router.get('/taskKeyword', keywordController.readTaskKeyword);
+/* [POST] /keywords/taskKeyword */
+router.post('/taskKeyword', keywordController.addTaskKeyword);
+/* [DELETE] /keywords/taskKeyword */
+router.delete('/taskKeyword', keywordController.deleteTaskKeyword);
 /* [GET] /keywords/keywordList */
 router.get('/keywordList', keywordController.readKeywordList);
 /** [GET] /keywords/definition */

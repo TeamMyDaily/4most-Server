@@ -10,7 +10,6 @@ const responseMessage = require('../modules/responseMessage');
 module.exports = {
   /* 키워드 선택 */
   selectKeywords: async (req, res) => {
-    // const id = 2;
     const { id } = req.decoded;
     const { keywords } = req.body; // "keywords": ["단어1", "단어2","단어3"]
     const keywordsByDate = []
@@ -46,10 +45,6 @@ module.exports = {
           TotalKeywordId: totalKeyword[0].id,
           date: new Date()
         })
-        // const weekGoal = await WeekGoal.create({
-        //   TotalKeywordId: totalKeyword.id,
-        //   date: keywordByDate.date
-        // })
         keywordsByDate.push(keywordByDate);
       } 
       return res.status(sc.OK).send(ut.success(sc.OK, "키워드 설정 완료", keywordsByDate)); 
@@ -85,7 +80,6 @@ module.exports = {
   },
   /* 우선순위 설정 */
   setPriorities: async (req, res) => {
-    // const id = 3;
     const { id } = req.decoded;
     const { keywords } = req.body;
     const result = new Array();
@@ -114,7 +108,6 @@ module.exports = {
   },
   /* 키워드 추가 */
   addKeyword: async (req, res)  => {
-    // const id = 3;
     const { id } = req.decoded;
     const { name } = req.body;
     if (!name) {
@@ -149,28 +142,111 @@ module.exports = {
       return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "키워드 추가 실패"));    
     }
   },
+  /* 키워드 삭제 */
   deleteKeyword: async (req, res)  => {
     const { id } = req.decoded;
-    // const id = 3;
-    const { keywords } = req.body;
-    if (!keywords) {
+    const { totalKeywordId } = req.body;
+    console.log(totalKeywordId)
+    if (!totalKeywordId || !id) {
       console.log('필요한 값이 없습니다!');
       return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
     }
     try {
-      for (var k of keywords) {
-        const keyword = await Keyword.findOne({ name : k.name });
-        const totalKeyword = await TotalKeyword.destroy({
-          where: {
-            KeywordId: keyword.id,
-            UserId: id
-          }
-        })
-      } 
+      const totalKeyword = await TotalKeyword.destroy({
+        where: {
+          id: totalKeywordId
+        }
+      })
+      if(!totalKeyword){
+        return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.NOT_MODIFIED, "키워드 삭제 실패")); 
+      }
       return res.status(sc.OK).send(ut.success(sc.OK, "키워드 삭제 완료"));
     } catch(err) {
       console.log(err);
-      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "키워드 추가 실패"));    
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));    
+    }
+  },
+  /* 기록 키워드 등록 */
+  addTaskKeyword: async (req, res) => {
+    const { id } = req.decoded;
+    const { totalKeywordId } = req.body;
+    const date = new Date();
+    if(!id || !totalKeywordId) {
+      console.log('필요한 값이 없습니다!');
+      return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
+    }
+    try{
+      const totalKeyword = await TotalKeyword.findOne({where: { id: totalKeywordId }})
+      const mostRecentDate = await KeywordByDate.findAll({
+        limit: 1,
+        attributes: ['date'],
+        where: {
+            date: {
+                [Op.lt]: date,
+            }
+        },
+        order : [['date', 'DESC']],
+        include: [{
+            model: TotalKeyword,
+            attributes: ['UserId'],
+            where: { UserId: id }
+        }]
+      });
+      if (!mostRecentDate.length) {
+        return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "기존에 설정되어 있던 기록 키워드 없음"));
+      }
+      const taskKeywords = await KeywordByDate.findAll({
+        where: {
+          date: mostRecentDate[0].date,
+        },
+        include: [
+          {
+            model: TotalKeyword,
+            where: {
+              UserId: id,
+            },
+          }
+        ]
+      })
+      if (taskKeywords.length == 4){
+        return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, "이미 기록 키워드가 4개입니다."));
+      }
+      const result = new Array();
+      /* 기존 키워드 객체 생성 */
+      for (let keyword of taskKeywords) {
+        const keywordByDate = await KeywordByDate.create({
+          TotalKeywordId: keyword.TotalKeyword.id,
+          definition: keyword.TotalKeyword.definition,
+          date: date
+        });
+        result.push(keywordByDate);
+      }
+      /* 새롭게 추가하는 키워드 객체 생성 */
+      const newKeywordByDate = await KeywordByDate.create({
+        TotalKeywordId: totalKeywordId,
+        date : date,
+        definition: totalKeyword.definition
+      });
+      result.push(newKeywordByDate);
+      return res.status(sc.OK).send(ut.success(sc.OK, "기록 키워드 설정 완료", result)); 
+    }catch (err) {
+      console.log(err);
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
+    }
+  },
+  /* 기록 키워드 해지 */
+  deleteTaskKeyword: async (req, res) => {
+    const { id } = req.decoded;
+    const { totalKeywordId } = req.body;
+    try {
+      const keywordByDate = await KeywordByDate.destroy({where: { TotalKeywordId: totalKeywordId}})
+      if (!keywordByDate){
+        return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.NOT_MODIFIED, "기록 키워드 해지 실패"));
+      }
+      return res.status(sc.OK).send(ut.success(sc.OK, "기록 키워드 해지 완료"));
+    }catch (err) {
+      console.log(err);
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
   },
   readTaskKeyword: async (req, res) => {
