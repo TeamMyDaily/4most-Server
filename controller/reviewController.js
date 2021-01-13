@@ -140,6 +140,7 @@ module.exports = {
           }
         });
       }
+      console.log(createdReview);
       return res
         .status(sc.OK)
         .send(ut.success(sc.OK, '회고 등록 완료', createdReview));

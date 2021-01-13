@@ -150,6 +150,7 @@ module.exports = {
     // const id = 1; //development
 
     if (!id || !start || !end) {
+      console.log(id, start, end);
       console.log('필요한 정보가 없습니다.');
       return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
     }
