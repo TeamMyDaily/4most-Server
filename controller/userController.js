@@ -86,6 +86,8 @@ module.exports ={
       const { accessToken, refreshToken } = await jwt.sign(user);
 
       return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.SIGN_IN_SUCCESS, {
+        "userName": user.userName,
+        "email": user.email,
         accessToken,
         refreshToken
       }));
