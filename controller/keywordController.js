@@ -82,6 +82,46 @@ module.exports = {
   readKeywordDef: async (req, res) => {
     const { id } = req.decoded;
     const { totalKeywordId } = req.query;
+
+    if(!totalKeywordId) {
+      return res
+        .status(sc.BAD_REQUEST)
+        .send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
+    }
+    
+    try {
+      const keywordDefs = await TotalKeyword.findOne({
+        attributes: ['definition'],
+        where: {
+          id: totalKeywordId,
+        },
+        include: [
+          {
+            model: Keyword,
+            attributes: ['name']
+          }
+        ]
+      });
+      const result = {};
+      if(!keywordDefs) {
+        console.log('키워드 정의 전입니다.');
+        result.isWritten = false;
+        return res
+          .status(sc.OK)
+          .send(ut.success(sc.OK, '키워드 정의 조회 성공', result));
+      }
+      result.isWritten = true;
+      result.name = keywordDefs.Keyword.name;
+      result.definition = keywordDefs.definition;
+      return res
+        .status(sc.OK)
+        .send(ut.success(sc.OK, '키워드 정의 조회 성공', result));
+    } catch(err) {
+      console.log(err);
+      return res
+        .status(sc.BAD_REQUEST)
+        .send(ut.fail(sc.BAD_REQUEST, rm.INTERNAL_SERVER_ERROR));
+    }    
   },
   /* 우선순위 설정 */
   setPriorities: async (req, res) => {

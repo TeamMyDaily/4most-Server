@@ -17,4 +17,6 @@ router.delete('/', keywordController.deleteKeyword);
 router.get('/taskKeyword', keywordController.readTaskKeyword);
 /* [GET] /keywords/keywordList */
 router.get('/keywordList', keywordController.readKeywordList);
+/* [GET] /keywords/definition */
+router.get('/definition', keywordController.readKeywordDef);
 module.exports = router;
