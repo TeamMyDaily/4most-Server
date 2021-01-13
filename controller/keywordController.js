@@ -68,11 +68,10 @@ module.exports = {
     }
     try{
       const keyword = await Keyword.findOne({where: {name: name}});
-      const totalKeyword = await TotalKeyword.findOne({where: {UserId: id, KeywordId: keyword.id}});
-      const updated = await KeywordByDate.update({
+      const totalKeyword = await TotalKeyword.update({
         definition: definition
       },{
-        where: {TotalKeywordId: totalKeyword.id}
+        where: {UserId: id, KeywordId: keyword.id}
       });
       return res.status(sc.OK).send(ut.success(sc.OK, "키워드 정의 등록 완료"));
     } catch(err) {
