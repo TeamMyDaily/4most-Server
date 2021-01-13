@@ -77,6 +77,9 @@ module.exports = {
         else{
           notSetGoalCount += 1;
           data.isGoalCreated = false;
+          data.weekGoalId = null;
+          data.weekGoal = null;
+          data.isGoalCompleted = null;
         }
         keywords.push(data);
       }
