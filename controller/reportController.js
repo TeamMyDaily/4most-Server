@@ -165,7 +165,10 @@ module.exports = {
         include: [{
           model: Keyword,
           attributes: ['name']
-        }]
+        }],
+        where: {
+          id: totalKeywordId,
+        }
       });
 
       const keywordName = rawKeywordName.Keyword.name;
@@ -184,7 +187,7 @@ module.exports = {
           date : { [Op.lte]: endDate , [Op.gte]: startDate }
         }
       });
-      
+      console.log(weekGoal);
       const goalStartDate = weekGoal[0].date;
       
       const totalKeywords = await TotalKeyword.findAll({
