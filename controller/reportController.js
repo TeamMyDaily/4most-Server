@@ -205,10 +205,16 @@ module.exports = {
 
       console.log()
       const result = {};
-      result.keywordName = keywordName;
-      result.goal = weekGoal[0]['goal'];
-      result.isGoalCompleted = !!weekGoal[0]['isGoalCompleted'];
       
+      result.keywordName = keywordName;
+      if(weekGoal.length === 0) {
+        result.goalExist = false;
+      }else {
+        result.goalExist = true;
+        result.goal = weekGoal[0]['goal'];
+        result.isGoalCompleted = !!weekGoal[0]['isGoalCompleted'];
+      }
+    
       result.tasks = [];
       totalKeywords.forEach(o => {
         let task = {};
@@ -219,7 +225,7 @@ module.exports = {
         result.tasks.push(task);
       })
       
-      return res.status(sc.OK).send(ut.success(sc.OK, '리포트 > 키워드별 조회 성공', result));
+      return res.status(sc.OK).send(ut.success(sc.OK, '리포트 > 키워드별 조회 성공', result));  
     } catch (err) {
       console.log(err);
       return res .status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
