@@ -53,7 +53,7 @@ module.exports = {
         //raw: true,
         attributes: { exclude: ['id'] },
         where: {
-          date: { [Op.lte]: mostRecentDate[0].date }
+          date : { [Op.lt]: endDate , [Op.gte]: startDate }
         },
         order: [['date','DESC'],['priority','ASC']],
         include: [
@@ -73,31 +73,23 @@ module.exports = {
                 order: [['date', 'DESC']],
                 attributes: ['goal'],
                 where: {
-                  [Op.and] : [{ 
-                    date: { [Op.gte]: startDate },
-                    date: { [Op.lt]: endDate }
-                  }]
+                  date : { [Op.lt]: endDate , [Op.gte]: startDate }
                 }
               },
-              {
-                model: Task,
-                attributes: ['satisfaction'],
-                where: {
-                  [Op.and] : [{ 
-                    date: { [Op.gte]: startDate},
-                    date: { [Op.lt]: endDate }
-                  }]
-                }
-              }
             ]
           }
         ]
       });
-      // console.log(queryResult);
       const results = {};
       for (let o of queryResult){
-        if (o.TotalKeyword.Tasks.length) {
-          //const tempnew Object();
+        const tasks = await Task.findAll({
+          attributes: ['satisfaction'],
+          where: {
+            TotalKeywordId: o.TotalKeywordId,
+            date : { [Op.lt]: endDate , [Op.gte]: startDate }
+          }
+        })
+        if (tasks.length) {
           const name= o.TotalKeyword.Keyword.name;
           //같은 키워드라도 한 주 중간에 키워드 바뀐 경우 KeywordByDate객체가 달라서 따로 출력된다. 이를 막기 위해 조건문 이용
           if(name in results) {
@@ -107,12 +99,6 @@ module.exports = {
             else{
               results[name].weekGoal = undefined
             }
-            let sum = results[name].taskSatisAvg*results[name].taskCnt;
-            for (let task of o.TotalKeyword.Tasks) {
-              sum+=task.satisfaction;
-            }
-            results[name].taskCnt += o.TotalKeyword.Tasks.length;
-            results[name].taskSatisAvg = (sum/results[name].taskCnt).toFixed(1);
           }
           else {
             results[name] = new Object();
@@ -121,9 +107,9 @@ module.exports = {
             if(o.TotalKeyword.WeekGoals.length){
               results[name].weekGoal = o.TotalKeyword.WeekGoals[0].goal;
             }
-            results[name].taskCnt = o.TotalKeyword.Tasks.length;
+            results[name].taskCnt = tasks.length;
             let sum = 0;
-            for (let task of o.TotalKeyword.Tasks) {
+            for (let task of tasks) {
               sum+=task.satisfaction;
             }
             results[name].taskSatisAvg = (sum/results[name].taskCnt).toFixed(1);
