@@ -307,12 +307,14 @@ module.exports = {
       const result = [];
       selectedKeywords.forEach(e => {
         const obj = {};
+        obj.totalKeywordId = e.id;
         obj.isSelected = true;
         obj.name = e.Keyword.name;
         result.push(obj);
       })
       notSelectedKeywords.forEach(e => {
         const obj = {};
+        obj.totalKeywordId = e.id;
         obj.isSelected = false;
         obj.name = e.Keyword.name;
         result.push(obj);
