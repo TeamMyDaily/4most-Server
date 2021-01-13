@@ -93,7 +93,7 @@ module.exports = {
           }
         ]
       });
-      console.log(queryResult);
+      // console.log(queryResult);
       const results = {};
       for (let o of queryResult){
         if (o.TotalKeyword.Tasks.length) {
@@ -136,6 +136,7 @@ module.exports = {
       for (let keyword of Object.keys(results)) {
         data.result.push(results[keyword]);
       }
+      console.log(data);
       return res.status(sc.OK).send(ut.success(sc.OK, rm.READ_REPORT_SUCCESS, data));
       
     } catch (err) {
