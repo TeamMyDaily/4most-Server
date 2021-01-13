@@ -5,6 +5,7 @@ const rm = require('../modules/responseMessage');
 const { formatters } = require('debug');
 const keyword = require('../models/keyword');
 const { Op } = require('sequelize');
+const responseMessage = require('../modules/responseMessage');
 
 module.exports = {
   /* 키워드 선택 */
@@ -183,8 +184,13 @@ module.exports = {
         }
       });
       totalKeywordIds = totalKeywords.map(e => e.id);
-
-
+      if(totalKeywords.length === 0) {
+        console.log('사용자가 키워드를 정하기 전임');
+        return res
+          .status(sc.OK)
+          .send(ut.success(sc.OK, '키워드가 없어요.'));
+      }
+ 
       const mostRecentDate = await KeywordByDate.findOne({
         raw: true,
         attributes: ['date'],
@@ -231,7 +237,7 @@ module.exports = {
         .send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
   },
-  readKeywordList: async (req, res) => {
+  readKeywordList:   async (req, res) => {
     const { id } = req.decoded;
     try {
       //KeywordByDate에서 가장 최근 키워드를 뽑아온당!
@@ -243,6 +249,8 @@ module.exports = {
       });
       
       const totalKeywordIds = totalKeywordObjs.map(e => e.id);
+      
+      //그 키워드가 등록된 날짜를 가져온다: mostRecentDate
       const mostRecentDateObj = await KeywordByDate.findOne({
         attributes: ['date'],
         where: {
@@ -252,8 +260,8 @@ module.exports = {
         },
         order: [['date', 'DESC']]
       });
-      
       const mostRecentDate = mostRecentDateObj.date;
+
       // 지금 선택되어있는 키워드의 totalKeywordId를 가져온다.
       const KeywordByDates = await KeywordByDate.findAll({
         attributes: ['TotalKeywordId'],
