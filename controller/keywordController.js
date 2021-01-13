@@ -30,13 +30,19 @@ module.exports = {
             name: name
           } 
         });
-        console.log(keyword);
-        const totalKeyword = await TotalKeyword.create({
-          KeywordId: keyword[0].id,
-          UserId: id
+        const totalKeyword = await TotalKeyword.findOrCreate({
+          raw: true,
+          where: {
+            KeywordId: keyword[0].id,
+            UserId: id
+          },
+          defaults: {
+            KeywordId: keyword[0].id,
+            UserId: id
+          }
         })
         const keywordByDate = await KeywordByDate.create({
-          TotalKeywordId: totalKeyword.id,
+          TotalKeywordId: totalKeyword[0].id,
           date: new Date()
         })
         // const weekGoal = await WeekGoal.create({
