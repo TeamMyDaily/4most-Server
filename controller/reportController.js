@@ -145,8 +145,7 @@ module.exports = {
   },
 
   readWeekReviewDetail: async (req, res) => {
-    const { start, end } = req.query;
-    const { totalKeywordId } = req.body;
+    const { start, end, totalKeywordId } = req.body;
     const { id } = req.decoded;
     // const id = 1; //development
 
