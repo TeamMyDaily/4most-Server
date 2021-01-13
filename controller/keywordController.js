@@ -184,7 +184,7 @@ module.exports = {
         }
       });
       totalKeywordIds = totalKeywords.map(e => e.id);
-      if(totalKeyword.length === 0) {
+      if(totalKeywords.length === 0) {
         console.log('사용자가 키워드를 정하기 전임');
         return res
           .status(sc.OK)
