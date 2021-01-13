@@ -58,30 +58,25 @@ module.exports = {
     }
   },
   /* 키워드 정의 */
-  defineKeywords: async (req, res) => {
+  defineKeyword: async (req, res) => {
     const { id } = req.decoded;
-    // const id = 3;
-    const { keywords } = req.body;
-    const result = new Array();
+    const { name, definition } = req.body;
+    if (!name || !definition) {
+      console.log('필요한 값이 없습니다!');
+      return res.status(sc.BAD_REQUEST).send(ut.fail(sc.BAD_REQUEST, rm.NULL_VALUE));
+    }
     try{
-      for (var k of keywords) {
-        const name = k.name;
-        const keyword = await Keyword.findOne({where: {name: name}});
-        const totalKeyword = await TotalKeyword.findOne({where: {UserId: id, KeywordId: keyword.id}});
-        const updated = await KeywordByDate.update({
-          definition: k.definition,
-        },{
-          where: {TotalKeywordId: totalKeyword.id}
-        });
-        result.push(updated);
-      };
-      // if(!result.every( function( x ) { return x = true } ) ){
-      //   return res.status(sc.NOT_MODIFIED).send(ut.fail(sc.NOT_MODIFIED, "키워드 정의 실패"));
-      // }
+      const keyword = await Keyword.findOne({where: {name: name}});
+      const totalKeyword = await TotalKeyword.findOne({where: {UserId: id, KeywordId: keyword.id}});
+      const updated = await KeywordByDate.update({
+        definition: definition
+      },{
+        where: {TotalKeywordId: totalKeyword.id}
+      });
       return res.status(sc.OK).send(ut.success(sc.OK, "키워드 정의 등록 완료"));
     } catch(err) {
       console.log(err);
-      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, "키워드 정의 실패"));
+      return res.status(sc.INTERNAL_SERVER_ERROR).send(ut.fail(sc.INTERNAL_SERVER_ERROR, rm.INTERNAL_SERVER_ERROR));
     }
   },
   /* 우선순위 설정 */

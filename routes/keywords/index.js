@@ -5,7 +5,7 @@ const keywordController = require('../../controller/keywordController');
 /* [POST] localhost:3000/keywords/  */
 router.post('/', keywordController.selectKeywords);
 /* [POST] localhost:3000/keywords/definition */
-router.post('/definition', keywordController.defineKeywords);
+router.post('/definition', keywordController.defineKeyword);
 /* [POST] localhost:3000/keywords/priority */
 router.post('/priority', keywordController.setPriorities);
 /* [PUT] localhost:3000/keywords */
