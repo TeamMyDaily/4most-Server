@@ -86,8 +86,8 @@ module.exports = {
   },
   /* 우선순위 설정 */
   setPriorities: async (req, res) => {
-    const id = 3;
-    // const { id } = req.decoded;
+    // const id = 3;
+    const { id } = req.decoded;
     const { keywords } = req.body;
     const result = new Array();
     try{
