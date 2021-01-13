@@ -21,6 +21,6 @@ router.post('/taskKeyword', keywordController.addTaskKeyword);
 router.delete('/taskKeyword', keywordController.deleteTaskKeyword);
 /* [GET] /keywords/keywordList */
 router.get('/keywordList', keywordController.readKeywordList);
-/** [GET] /keywords/definition */
+/* [GET] /keywords/definition */
 router.get('/definition', keywordController.readKeywordDef);
 module.exports = router;
