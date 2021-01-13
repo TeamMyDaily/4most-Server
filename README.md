@@ -56,7 +56,7 @@
 
 ### ER Diagram 
 
-<img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/c1f7627b-971c-4fbd-9d19-e2207d6eb00c/MYDaily_ERD.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210106%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210106T085630Z&X-Amz-Expires=86400&X-Amz-Signature=39637d1d98a3e77609d372c413430ebc87ebbb2bb03b55682544ecf1b410ff16&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22MYDaily_ERD.png%22" width="70%">
+<img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d3cc0bde-abe2-4ba1-a588-a81de2e9f2f0/erd8th.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210113%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210113T163853Z&X-Amz-Expires=86400&X-Amz-Signature=5955eaeb2d64868f783ae9153d9b3b18804c0b1dd830ab88dea80acbea5ead85&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22erd8th.png%22" width="70%">
 
 ---
 
@@ -87,6 +87,10 @@
 - 마이페이지
 
 ---
+
+### Architecture
+
+<img src="https://github.com/TeamMyDaily/4most-Server/blob/dev/public/img/%EC%84%9C%EB%B2%84%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png?raw=true" width="">
 
 ### Contributor 👩‍👧
 
