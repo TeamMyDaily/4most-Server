@@ -72,6 +72,7 @@ module.exports = {
       const createEndDate = new Date(+end -1);
       const alreadyWritten = await Review.findOne({
         where: {
+          UserId: id,
           date: {
             [Op.gte]: startDate,
             [Op.lt]: endDate
@@ -82,7 +83,7 @@ module.exports = {
       let createdReview;
       if(!alreadyWritten) { // create new review
         let inputDate;
-        if (startDate <= nowDate && nowDate <= endDate){
+        if (startDate <= nowDate && nowDate < endDate){
           inputDate = nowDate
         } else {
           inputDate = createEndDate;
@@ -98,7 +99,7 @@ module.exports = {
             createdReview = await Review.create({ UserId: id, date: inputDate, next: content });
             break;
         }
-        
+        console.log(createdReview);
       } else {
         switch(subType) {
           case 1: 
@@ -131,15 +132,15 @@ module.exports = {
               } 
             });
             break;
-        } 
-        createdReview = await Review.findOne({
-          attributes: ['good', 'bad', 'next'],
-          where: {
-            UserId: id,
-            date: {[Op.gte]: startDate, [Op.lt]: endDate}
-          }
-        });
+        }
       }
+      createdReview = await Review.findOne({
+        attributes: ['good', 'bad', 'next'],
+        where: {
+          UserId: id,
+          date: {[Op.gte]: startDate, [Op.lt]: endDate}
+        }
+      });
       console.log(createdReview);
       return res
         .status(sc.OK)
