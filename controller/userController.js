@@ -84,10 +84,29 @@ module.exports ={
       }
       
       const { accessToken, refreshToken } = await jwt.sign(user);
-
+      const mostRecentDate = await KeywordByDate.findAll({
+        limit: 1,
+        attributes: ['date'],
+        where: {
+            date: {
+                [Op.lt]: new Date(),
+            }
+        },
+        order : [['date', 'DESC']],
+        include: [{
+            model: TotalKeyword,
+            attributes: ['UserId'],
+            where: { UserId: user.id }
+        }]
+      }); 
+      let keywordsExist = false;
+      if(mostRecentDate.length){
+        keywordsExist = true;
+      }
       return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.SIGN_IN_SUCCESS, {
         "userName": user.userName,
         "email": user.email,
+        "keywordsExist": keywordsExist,
         accessToken,
         refreshToken
       }));
