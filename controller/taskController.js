@@ -28,8 +28,8 @@ module.exports = {
                 }]
             })
             if(!mostRecentDate.length){
-                const result = {"keywordsExist" : false}
-                return res.status(sc.OK).send(ut.success(sc.OK, "설정된 키워드 없음", result))
+                const data = {"keywordsExist" : false, "result": null}
+                return res.status(sc.OK).send(ut.success(sc.OK, "설정된 키워드 없음", data))
             }
             const selectedKeywords = await KeywordByDate.findAll({
                 attributes: { exclude: ['id'] },
