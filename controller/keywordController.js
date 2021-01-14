@@ -98,9 +98,10 @@ module.exports = {
         ]
       });
       const result = {};
-      if(!keywordDefs) {
+      if(!keywordDefs.definition) {
         console.log('키워드 정의 전입니다.');
         result.isWritten = false;
+        result.definition="";
         return res
           .status(sc.OK)
           .send(ut.success(sc.OK, '키워드 정의 조회 성공', result));
