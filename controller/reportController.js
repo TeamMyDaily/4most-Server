@@ -6,7 +6,7 @@ const { Op } = require('sequelize');
 
 module.exports = {
   // GET /reports?startYear=20
-  readWeekReview: async (req, res) => {
+  readWeek: async (req, res) => {
     const { start, end }  = req.query;
 
     const { id } = req.decoded;
@@ -131,7 +131,7 @@ module.exports = {
     }    
   },
 
-  readWeekReviewDetail: async (req, res) => {
+  readWeekKeywordDetail: async (req, res) => {
     const { start, end, totalKeywordId } = req.body;
     const { id } = req.decoded;
     // const id = 1; //development
@@ -195,6 +195,7 @@ module.exports = {
       result.keywordName = keywordName;
       if(weekGoal.length === 0) {
         result.goalExist = false;
+        result.goal = null;
       }else {
         result.goalExist = true;
         result.goal = weekGoal[0]['goal'];
