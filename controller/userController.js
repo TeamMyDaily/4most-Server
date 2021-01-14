@@ -122,7 +122,7 @@ module.exports ={
       .status(statusCode.OK)
       .send(util.success(statusCode.OK,'회원 탈퇴 성공'));
   },
-  checkPassword: async (req, res) => {
+  readPassword: async (req, res) => {
     const { id } = req.decoded;
     const { password } = req.body;
     const isCorrect = await userService.checkPassword(id, password);
@@ -146,7 +146,7 @@ module.exports ={
       .status(statusCode.OK)
       .send(util.success(statusCode.OK, '비밀번호가 일치합니다', result));
   },
-  changePassword: async (req, res) => {
+  updatePassword: async (req, res) => {
     const { id } = req.decoded;
     const { password, newPassword } = req.body;
 
@@ -181,6 +181,39 @@ module.exports ={
     }
     return res
       .status(statusCode.OK)
-      .send(util.success(statusCode.OK, '비밀번호 변경 완료'));
+      .send(util.success(statusCode.OK, '비밀번호 변경 성공'));
+  },
+  updateNickname: async (req, res) => {
+    const { id } = req.decoded;
+    const { nickname } = req.body;
+    if (!nickname) {
+      console.log('필요한 값이 없습니다');
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(util.fail(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+    }
+    try {
+      await User.update({ userName: nickname }, {
+        where: {
+          id: id
+        }
+      });
+      const newUser = await User.findOne({
+        attributes: ['userName'],
+        where: {
+          id: id,
+        }
+      })
+      const newName = newUser.userName;
+      return res
+        .status(statusCode.OK)
+        .send(util.success(statusCode.OK, '닉네임 변경 성공', { newName: newName }));
+    } catch (err) {
+      console.log(err);
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.INTERNAL_SERVER_ERROR));
+    }
+    
   }
 }

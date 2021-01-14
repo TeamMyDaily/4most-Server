@@ -8,6 +8,7 @@ router.post('/signin', userController.signin);
 // router.post('/sendEmail', userController.sendEmail);
 
 router.delete('/', authUtil.checkToken, userController.deleteOne);
-router.post('/password', authUtil.checkToken, userController.checkPassword);
-router.post('/newPassword', authUtil.checkToken, userController.changePassword);
+router.post('/password', authUtil.checkToken, userController.readPassword);
+router.post('/newPassword', authUtil.checkToken, userController.updatePassword);
+router.post('/nickname', authUtil.checkToken, userController.updateNickname);
 module.exports = router;
