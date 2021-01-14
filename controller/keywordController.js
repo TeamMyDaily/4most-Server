@@ -101,6 +101,7 @@ module.exports = {
       if(!keywordDefs.definition) {
         console.log('키워드 정의 전입니다.');
         result.isWritten = false;
+        result.name = keywordDefs.Keyword.name;
         result.definition="";
         return res
           .status(sc.OK)
