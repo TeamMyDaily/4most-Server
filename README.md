@@ -1,11 +1,10 @@
 # 🧡 4most 🧡
 
-<img src="https://raw.githubusercontent.com/TeamMyDaily/4most-Server/226808c46742fcaa8373b3aef037d424e40bea61/public/img/wiki/appstore_ios_1024.svg" width="40%">
-
 > *이상이 일상이 되는 회고*
 >
 > ***4most***
 
+<img src="https://raw.githubusercontent.com/TeamMyDaily/4most-Server/8e7d91b799dc944948bf2e51e685728edfb6bed4/public/img/wiki/4most.svg">
 
 
 ---
