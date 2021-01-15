@@ -2,11 +2,9 @@
 
 <img src="https://raw.githubusercontent.com/TeamMyDaily/4most-Server/226808c46742fcaa8373b3aef037d424e40bea61/public/img/wiki/appstore_ios_1024.svg" width="40%">
 
-> *기록은 더 쉽게*
+> *이상이 일상이 되는 회고*
 >
-> *회고는 더 깊게*
->
-> ***어제보다 나은 하루의 시작, 4most***
+> ***4most***
 
 
 
