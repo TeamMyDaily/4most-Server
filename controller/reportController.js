@@ -41,7 +41,7 @@ module.exports = {
         order: [['date', 'DESC']]
       });
 
-      if(!mostRecentDate[0]) {
+      if(!mostRecentDate[0].totalKeywordId) {
         data.keywordsExist = false;
         return res
           .status(sc.OK)
