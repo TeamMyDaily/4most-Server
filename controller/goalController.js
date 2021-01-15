@@ -34,8 +34,8 @@ module.exports = {
         }]
       });
       if(!mostRecentDate.length){
-        const result = {"keywordsExist" : false}
-        return res.status(sc.OK).send(ut.success(sc.OK, "설정된 키워드 없음", result))
+        const result = {"keywordsExist" : false, "result": null };
+        return res.status(sc.OK).send(ut.success(sc.OK, "설정된 키워드 없음", result));
       }
       const selectedKeywords = await KeywordByDate.findAll({
         attributes: { exclude: ['id'] },
