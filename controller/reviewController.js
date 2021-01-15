@@ -53,7 +53,7 @@ module.exports = {
     const { id } = req.decoded;
     
     // const id = 1;
-    if (!id || !start || !end || !subType || !(typeof(content) == "string")) {
+    if (!id || !start || !end || !subType || !(typeof(content) === "string")) {
       console.log('필요한 정보가 없습니다.');
       return res
         .status(sc.BAD_REQUEST)

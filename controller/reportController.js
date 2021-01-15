@@ -191,6 +191,7 @@ module.exports = {
 
       console.log()
       const result = {};
+      result.totalKeywordId = totalKeywordId;
       
       result.keywordName = keywordName;
       if(weekGoal.length === 0) {
@@ -198,6 +199,7 @@ module.exports = {
         result.goal = null;
       }else {
         result.goalExist = true;
+        result.weekGoalId = weekGoal[0]['id'];
         result.goal = weekGoal[0]['goal'];
         result.isGoalCompleted = !!weekGoal[0]['isGoalCompleted'];
       }
