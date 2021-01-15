@@ -58,33 +58,48 @@
 
 <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d2a5e184-37bc-41a0-90e9-9fb8f9cb325a/erd9th.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210114%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210114T083357Z&X-Amz-Expires=86400&X-Amz-Signature=856488636e1c89f6e11e42fdaf411692dac9e6482da47c0b459af49b9daf2e1f&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22erd9th.png%22" width="70%">
 
+### Model association 🤸🏻‍♀️
+
+```javascript
+/** N : M   User: Keyword */
+db.User.belongsToMany(db.Keyword, { through: 'TotalKeyword' });
+db.Keyword.belongsToMany(db.User, { through: 'TotalKeyword' });
+
+/** 1 : N TotalKeyword : KeywordByDate */
+db.TotalKeyword.hasMany(db.KeywordByDate, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade' });
+db.KeywordByDate.belongsTo(db.TotalKeyword);
+
+/** 1 : N   Keyword : TotalKeyword */
+db.Keyword.hasMany(db.TotalKeyword, { foreignKey: { name: 'KeywordId', allowNull: false }, onDelete: 'cascade '});
+db.TotalKeyword.belongsTo(db.Keyword);
+
+/** 1 : N   User : Review */
+db.User.hasMany(db.Review, { foreignKey: { name: 'UserId', allowNull: false }, onDelete: 'cascade'});
+db.Review.belongsTo(db.User);
+
+/** 1 : N   TotalKeyword : Task */
+db.TotalKeyword.hasMany(db.Task, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade'});
+db.Task.belongsTo(db.TotalKeyword);
+
+/** 1 : N  TotalKeyword : WeekGoal */
+db.TotalKeyword.hasMany(db.WeekGoal, { foreignKey: { name: 'TotalKeywordId', allowNull: false }, onDelete: 'cascade'});
+db.WeekGoal.belongsTo(db.TotalKeyword);
+```
+
+
 ---
 
 ### 4most 핵심 기능 🏃🏻‍♂️
 
-- 회원 가입
+- **키워드 설정** : 사용자는 각자 최대 4개의 키워드를 설정할 수 있습니다. 이후에 변경/수정이 가능합니다.
 
-- 키워드 설정 : 사용자는 각자 최대 4개의 키워드를 설정할 수 있습니다. 이후에 변경/수정이 가능합니다.
+- **키워드별 목표 설정**: 설정한 키워드 별로 금주의 목표를 설정할 수 있습니다.
 
-  <img src="https://github.com/TeamMyDaily/4most-Server/blob/dev/public/img/views/%ED%82%A4%EC%9B%8C%EB%93%9C_%ED%82%A4%EC%9B%8C%EB%93%9C%EC%84%A0%ED%83%9D.png?raw=true" width="20%">
+- **하루 기록**: 설정한 목표를 달성하기 위해, 하루동안 했던 일을 기록할 수 있습니다.
 
-- 키워드별 목표 설정: 설정한 키워드 별로 금주의 목표를 설정할 수 있습니다.
+- **리포트 및 회고**: 금주의 목표와 지금까지 해온 기록들을 한 눈에 확인할 수 있습니다.
 
-  <img src="https://github.com/TeamMyDaily/4most-Server/blob/dev/public/img/views/%EB%AA%A9%ED%91%9C%EC%84%A4%EC%A0%95_%EC%A3%BC%EC%B0%A8%EB%B3%84%EC%A1%B0%ED%9A%8C.jpg?raw=true" width="20%">
-
-  <img src="https://github.com/TeamMyDaily/4most-Server/blob/dev/public/img/views/%EB%AA%A9%ED%91%9C%EC%84%A4%EC%A0%95_%EC%B5%9C%EC%B4%88%20%EC%84%A4%EC%A0%95%20.png?raw=true" width="20%">
-
-- 하루 기록: 설정한 목표를 달성하기 위해, 하루동안 했던 일을 기록할 수 있습니다.
-
-  <img src="https://github.com/TeamMyDaily/4most-Server/blob/dev/public/img/views/%EB%82%98%EC%9D%98%EA%B8%B0%EB%A1%9D_Main.png?raw=true" width="20%">
-
-  <img src="https://github.com/TeamMyDaily/4most-Server/blob/dev/public/img/views/%EB%82%98%EC%9D%98%20%EA%B8%B0%EB%A1%9D_%EA%B8%B0%EB%A1%9D%EC%B6%94%EA%B0%80.jpg?raw=true" width="20%">
-
-- 리포트 및 회고: 금주의 목표와 지금까지 해온 기록들을 한 눈에 확인할 수 있습니다.
-
-  <img src="https://github.com/TeamMyDaily/4most-Server/blob/dev/public/img/views/%ED%8F%89%EA%B0%80%EB%B0%8F%20%ED%9A%8C%EA%B3%A0_%ED%9A%8C%EA%B3%A0GET.jpg?raw=true" width="20%">
-
-- 마이페이지
+- 회원가입, 마이페이지
 
 ---
 
