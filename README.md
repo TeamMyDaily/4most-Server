@@ -105,7 +105,7 @@ db.WeekGoal.belongsTo(db.TotalKeyword);
 
 ### Architecture
 
-<img src="https://github.com/TeamMyDaily/4most-Server/blob/dev/public/img/%EC%84%9C%EB%B2%84%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png?raw=true" width="">
+<img src="https://raw.githubusercontent.com/TeamMyDaily/4most-Server/c54567b5343e25fd55de0a21c9841100b29d7520/public/img/wiki/serverArch.svg" width="">
 
 ### Contributor 👩‍👧
 
