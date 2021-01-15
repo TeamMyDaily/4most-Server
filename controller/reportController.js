@@ -29,19 +29,29 @@ module.exports = {
           .status(sc.BAD_REQUEST)
           .send(ut.fail(sc.BAD_REQUEST, rm.NO_USER));
       }   
-
+      const totalKeywords = await TotalKeyword.findAll({
+        where: {
+          UserId: id
+        }
+      });
+      
+      const totalKeywordIds = totalKeywords.map(e => e.id);
+      
       const data = new Object();
 
       const mostRecentDate = await KeywordByDate.findAll({
         limit: 1,
         attributes: ['date'],
         where: {
-           date : { [Op.lt]: endDate, [Op.gte]: startDate }
+          TotalKeywordId: {
+            [Op.in]: totalKeywordIds,
+          },
+          date : { [Op.lt]: endDate, [Op.gte]: startDate }
         },
         order: [['date', 'DESC']]
       });
-
-      if(!mostRecentDate[0].totalKeywordId) {
+      console.log(mostRecentDate);
+      if(!mostRecentDate[0]) {
         data.keywordsExist = false;
         return res
           .status(sc.OK)
