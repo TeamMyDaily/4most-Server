@@ -1,6 +1,6 @@
 # 🧡 4most 🧡
 
-<img src="https://user-images.githubusercontent.com/55099365/103762567-d8887680-505b-11eb-9a76-83b8da83104c.jpeg" width="50%">
+<img src="https://raw.githubusercontent.com/TeamMyDaily/4most-Server/226808c46742fcaa8373b3aef037d424e40bea61/public/img/wiki/appstore_ios_1024.svg" width="40%">
 
 > *기록은 더 쉽게*
 >
