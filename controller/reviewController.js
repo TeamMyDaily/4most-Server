@@ -105,6 +105,7 @@ module.exports = {
           case 1: 
             await Review.update({ good: content }, {
               where: {
+		UserId: id,
                 date: {
                   [Op.gte]: startDate,
                   [Op.lt]: endDate,
@@ -115,6 +116,7 @@ module.exports = {
           case 2:
             await Review.update({ bad: content }, {
               where: {
+		UserId: id,
                 date: {
                   [Op.gte]: startDate,
                   [Op.lt]: endDate,
@@ -125,6 +127,7 @@ module.exports = {
           case 3:
             await Review.update({ next: content }, {
               where: {
+		UserId: id,
                 date: {
                   [Op.gte]: startDate,
                   [Op.lt]: endDate,
